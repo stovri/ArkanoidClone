@@ -7,6 +7,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.Graphics;
 import java.awt.image.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.awt.*;
 
 public class Board extends JPanel implements Runnable {
@@ -14,7 +15,7 @@ public class Board extends JPanel implements Runnable {
   private final String BACKGROUND_FILE_NAME = "images/background.png";
   private BufferedImage background;
   private Thread animator;
-  private Actor actor;
+  private Astronaut actor;
 
   /**
    * Initialize the board
@@ -35,7 +36,21 @@ public class Board extends JPanel implements Runnable {
     // set the size of the panel to the size of the background
     setPreferredSize(getPreferredSize());
     setFocusable(true);
-    actor = new Actor();
+    actor = new Astronaut();
+  }
+
+  public void manageBullets(){
+    ArrayList<Bullet> bullets=actor.getBullets();
+    for (int i = 0; i < bullets.size(); i++) {
+      Bullet bill = bullets.get(i);
+      bill.act();
+      //is Bill out of bounds?
+      if (bill.getX() < 0 || bill.getX() > Utility.gameWidth
+          || bill.getY() < 0 || bill.getY() > Utility.gameHeight) {
+        bullets.remove(i);
+      }
+    }
+
   }
 
   private void loadBackground() {
@@ -68,6 +83,12 @@ public class Board extends JPanel implements Runnable {
 
     // call other drawing stuff here
     actor.draw(g2d, this);
+    //get the array list of bullets
+    ArrayList<Bullet> bullets=actor.getBullets();
+    //draw them all
+    for(Bullet bill:bullets){
+      bill.draw(g2d, this);
+    }
 
     // This method will ensure that the display is up to date
     Toolkit.getDefaultToolkit().sync();
@@ -75,6 +96,8 @@ public class Board extends JPanel implements Runnable {
 
   private void act() {
     actor.act();
+    manageBullets();
+    checkCollisions();
   }
 
   // This will start the thread for animation

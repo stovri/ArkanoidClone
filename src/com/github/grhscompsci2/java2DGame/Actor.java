@@ -128,6 +128,10 @@ public class Actor {
     return sprite;
   }
 
+  public String getFileName(){
+    return fileName;
+  }
+
   /**
    * Update the image for the actor sprite. Useful for animations.
    * 
@@ -139,13 +143,63 @@ public class Actor {
   }
 
   /**
+   * Getter for dx
+   * @return the dx attribute
+   */
+  public int getDX() {
+    return dx;
+  }
+
+  /**
+   * Setter for dx
+   * @param dx the new value for dx
+   */
+  public void setDX(int dx) {
+    this.dx = dx;
+  }
+
+  /**
+   * Getter for dy
+   * @return the attribute dy
+   */
+  public int getDY() {
+    return dy;
+  }
+
+  /**
+   * Setter for dy
+   * @param dy the new value for dy
+   */
+  public void setDY(int dy) {
+    this.dy = dy;
+  }
+
+  /**
+   * Getter for speed
+   * @return the attribute speed
+   */
+  public int getSpeed() {
+    return speed;
+  }
+
+  /**
+   * Setter for speed
+   * @param speed the new value for speed
+   */
+  public void setSpeed(int speed) {
+    this.speed = speed;
+  }
+
+  /**
    * Draws the sprite at the x, y location. Adapts to scale of the JFrame.
    * 
    * @param g Graphics2D object to draw the image
    * @param i Which JPanel is it drawn in?
    */
   public void draw(Graphics2D g, ImageObserver i) {
-    g.drawImage(sprite, Utility.scale(x), Utility.scale(y), Utility.scale(sprite.getWidth()),
+    int offsetX=x-sprite.getWidth()/2;
+    int offsetY=y-sprite.getHeight()/2;
+    g.drawImage(sprite, Utility.scale(offsetX), Utility.scale(offsetY), Utility.scale(sprite.getWidth()),
         Utility.scale(sprite.getHeight()), i);
   }
 
