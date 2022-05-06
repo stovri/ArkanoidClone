@@ -1,4 +1,5 @@
 package com.github.grhscompsci2.java2DGame;
+
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -10,11 +11,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.awt.*;
 
+/**
+ * This class controls the JPanel where the game logic and rendering happen. You
+ * will need to edit the attributes to add your enemies and player classes so
+ * they can draw and act here.
+ */
 public class Board extends JPanel implements Runnable {
   private final int DELAY = 25;
   private final String BACKGROUND_FILE_NAME = "images/background.png";
   private BufferedImage background;
   private Thread animator;
+
+  // Initialize all of your actors here: players, enemies, obstacles, etc.
   private Astronaut actor;
 
   /**
@@ -26,7 +34,9 @@ public class Board extends JPanel implements Runnable {
 
   /**
    * This method will initialize the key listener, load the background image, set
-   * the window size to the size of the image, and initialize an actor
+   * the window size to the size of the image, and initialize an actor. When you
+   * are modifying this for your game, you should initialize all of your actors
+   * that need to be used in the game.
    */
   private void initBoard() {
     // add the custom key adapter to the panel
@@ -36,15 +46,20 @@ public class Board extends JPanel implements Runnable {
     // set the size of the panel to the size of the background
     setPreferredSize(getPreferredSize());
     setFocusable(true);
+    // Initialize all actors below here
     actor = new Astronaut();
   }
 
-  public void manageBullets(){
-    ArrayList<Bullet> bullets=actor.getBullets();
+  /**
+   * This will step through all the bullets and have them act. If the bullet is
+   * out of bounds, it will remove them from the ArrayList.
+   */
+  public void manageBullets() {
+    ArrayList<Bullet> bullets = actor.getBullets();
     for (int i = 0; i < bullets.size(); i++) {
       Bullet bill = bullets.get(i);
       bill.act();
-      //is Bill out of bounds?
+      // is Bill out of bounds?
       if (bill.getX() < 0 || bill.getX() > Utility.gameWidth
           || bill.getY() < 0 || bill.getY() > Utility.gameHeight) {
         bullets.remove(i);
@@ -53,6 +68,11 @@ public class Board extends JPanel implements Runnable {
 
   }
 
+  /**
+   * This method will assign the BACKGROUND_FILE_NAME as the background of the
+   * JPanel. The background.png file will determine the resolution of your screen.
+   * All of your other sprites should match the resolution of the background.
+   */
   private void loadBackground() {
     // Load the image
     try {
@@ -63,6 +83,10 @@ public class Board extends JPanel implements Runnable {
     }
   }
 
+  /**
+   * Returns the preferred size of the background. Used to set the starting size
+   * of the JPanel window.
+   */
   @Override
   public Dimension getPreferredSize() {
     // if there is no image, give a default size
@@ -73,9 +97,15 @@ public class Board extends JPanel implements Runnable {
     return new Dimension(background.getWidth(), background.getHeight());
   }
 
+  /**
+   * This method will draw everything in JPanel. It will update the scale so when
+   * the JFrame is resized, the image will resize to maintain the aspect ratio.
+   */
   @Override
   public void paintComponent(Graphics g) {
+    // Graphics 2D offers greater control than Graphics, so use it instead.
     Graphics2D g2d = (Graphics2D) g;
+    // Update the scale based on the size of the JPanel
     Utility.updateScale(new Dimension(background.getWidth(), background.getHeight()), getSize());
 
     // Always draw this first so it will be on the bottom
@@ -83,10 +113,10 @@ public class Board extends JPanel implements Runnable {
 
     // call other drawing stuff here
     actor.draw(g2d, this);
-    //get the array list of bullets
-    ArrayList<Bullet> bullets=actor.getBullets();
-    //draw them all
-    for(Bullet bill:bullets){
+    // get the array list of bullets
+    ArrayList<Bullet> bullets = actor.getBullets();
+    // draw them all
+    for (Bullet bill : bullets) {
       bill.draw(g2d, this);
     }
 
@@ -94,13 +124,23 @@ public class Board extends JPanel implements Runnable {
     Toolkit.getDefaultToolkit().sync();
   }
 
+  /**
+   * This method is called once per frame. This will allow us to advance the game
+   * logic every frame so the actors move and react to input.
+   */
   private void act() {
-    actor.act();
-    manageBullets();
+    // Check for collisions between actors. Do it before they act so you can handle
+    // death and other cases appropriately
     checkCollisions();
+    // Have all of your actor attributes act here.
+    actor.act();
+    // Manage your bullets
+    manageBullets();
   }
 
-  // This will start the thread for animation
+  /**
+   * This method will start the thread for the animation.
+   */
   @Override
   public void addNotify() {
     super.addNotify();
@@ -109,6 +149,11 @@ public class Board extends JPanel implements Runnable {
     animator.start();
   }
 
+  /**
+   * This method is called once by the animator thread. It regulates the call to
+   * Thread.sleep so that each cycle is very close to the same length, unless
+   * something goes horribly wrong.
+   */
   @Override
   public void run() {
     long beforeTime;
@@ -128,7 +173,7 @@ public class Board extends JPanel implements Runnable {
       // we want to wait a consistent amount of time, so subtract timeDiff from DELAY
       sleep = DELAY - timeDiff;
 
-      // If we went too long, only wait 2 milliseconds
+      // If we went too long, only wait 2 milliseconds for garbage collection.
       if (sleep < 0) {
         sleep = 2;
       }
@@ -145,6 +190,11 @@ public class Board extends JPanel implements Runnable {
     }
   }
 
+  /**
+   * This method will check each actor to see if the bounding box overlaps the
+   * bounding box of any other actor. Not the most efficient, but will work for
+   * small games.
+   */
   public void checkCollisions() {
     // check player against all other objects
     /*
@@ -166,14 +216,30 @@ public class Board extends JPanel implements Runnable {
 
   }
 
+  /**
+   * This class is used to handle the keyEvents. If you want an actor to respond
+   * to the keyboard, they need to be called in this class.
+   */
   private class TAdapter extends KeyAdapter {
 
+    /**
+     * When a key is released, this method is called and passed the ID of the key
+     * that was released.
+     * 
+     * @param e the KeyEvent object generated by the KeyListener
+     */
     @Override
     public void keyReleased(KeyEvent e) {
       // add all objects that care about keys being released here
       actor.keyReleased(e);
     }
 
+    /**
+     * When a key is pressed, this method is called and passed the ID of the key
+     * that was pressed.
+     * 
+     * @param e the KeyEvent object generated by the KeyListener
+     */
     @Override
     public void keyPressed(KeyEvent e) {
       // add all objects that care about keys being pressed here

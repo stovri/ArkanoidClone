@@ -3,6 +3,11 @@ package com.github.grhscompsci2.java2DGame;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+/**
+ * This is a sample actor that will use the keyboard input to move. It uses four
+ * images to perform simple animation. It also fires bullets by adding to a
+ * bullet ArrayList.
+ */
 public class Astronaut extends Actor {
   public ArrayList<Bullet> bullets = new ArrayList<>();
   private final static String upImg = "images/astronaut_up.png";
@@ -13,15 +18,16 @@ public class Astronaut extends Actor {
   private boolean fired = false;
 
   /**
-   * Start the Astronaut off at 0,0. facing right
+   * Class constructor that will start the Astronaut off at (0,0), facing right
    */
   public Astronaut() {
     super(rightImg, 0, 0);
   }
 
   /**
-   * Adds on to the Actor keyPressed method. It updates our image to be facing the
-   * direction we are going.
+   * Adds on to the Actor keyPressed method by updating the sprite to be facing
+   * the
+   * direction it is travelling.
    * 
    * @param e the KeyEvent
    */
@@ -29,15 +35,22 @@ public class Astronaut extends Actor {
     super.keyPressed(e);
     // Get which key was pressed.
     int key = e.getKeyCode();
+
+    // going left?
     if (key == KeyEvent.VK_LEFT) {
       setImage(leftImg);
     }
+    // going right?
     if (key == KeyEvent.VK_RIGHT) {
       setImage(rightImg);
     }
+
+    // going down?
     if (key == KeyEvent.VK_DOWN) {
       setImage(downImg);
     }
+
+    // going up?
     if (key == KeyEvent.VK_UP) {
       setImage(upImg);
     }
@@ -52,7 +65,7 @@ public class Astronaut extends Actor {
 
   /**
    * Adds on to the Actor keyReleased method. It will cycle the firing flag to
-   * ensure only one bullet is fired per press.
+   * ensure only one bullet is fired per key press.
    * 
    * @param e the KeyEvent
    */
@@ -72,6 +85,7 @@ public class Astronaut extends Actor {
     int vX = 0;
     int vY = 0;
 
+    // based on the fileName, which direction are we facing?
     switch (getFileName()) {
       case upImg:
         vY = -1;
@@ -88,9 +102,15 @@ public class Astronaut extends Actor {
     }
     // Create a new bullet in the bullets ArrayList that has the correct position
     // and movement direction.
-    bullets.add(new Bullet(getX(), getY() , vX, vY));
+    bullets.add(new Bullet(getX(), getY(), vX, vY));
   }
 
+  /**
+   * Returns the current bullets ArrayList. Used to draw and act all of the
+   * existing bullets.
+   * 
+   * @return
+   */
   public ArrayList<Bullet> getBullets() {
     return bullets;
   }

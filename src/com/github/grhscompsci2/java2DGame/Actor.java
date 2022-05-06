@@ -8,6 +8,12 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+/**
+ * This is the base class for anything that needs to move/act on the screen. You
+ * should write classes that extend the actor class to make your game work. The
+ * player class, enemy classes, bullet classes, and obstacle classes should all
+ * extend the Actor class.
+ */
 public class Actor {
   private int dx;
   private int dy;
@@ -20,12 +26,10 @@ public class Actor {
 
   /**
    * Constructor that will set the image to the fileName, and set the position to
-   * (0,0)
-   * 
-   * @param fileName the relative location of the file ("images/filename.png")
+   * (0,0). This correspnds to the center of the sprite.
    */
   public Actor() {
-    this("images/actor.png", 0, 0);
+    this("images/no_sprite.png", 0, 0);
   }
 
   /**
@@ -33,8 +37,8 @@ public class Actor {
    * provided coordinates.
    * 
    * @param fileName the relative location of the file ("images/filename.png")
-   * @param x        the x coordinate of the sprite
-   * @param y        the y coordinate of the sprite
+   * @param x        the x coordinate of the center of the sprite
+   * @param y        the y coordinate of the center of the sprite
    */
   public Actor(String fileName, int x, int y) {
     this(fileName, x, y, 2);
@@ -81,7 +85,7 @@ public class Actor {
   }
 
   /**
-   * Getter for the x attribute
+   * Returns the x attribute
    * 
    * @return the x attribute
    */
@@ -90,7 +94,7 @@ public class Actor {
   }
 
   /**
-   * Getter for the y attribute
+   * Returns the y attribute
    * 
    * @return the y attribute
    */
@@ -99,7 +103,7 @@ public class Actor {
   }
 
   /**
-   * Getter for the width of the sprite
+   * Returns the width of the sprite
    * 
    * @return the width attribute.
    */
@@ -108,7 +112,7 @@ public class Actor {
   }
 
   /**
-   * Getter for the height of the sprite
+   * Returns the height of the sprite
    * 
    * @return the height attribute
    */
@@ -117,7 +121,7 @@ public class Actor {
   }
 
   /**
-   * Getter for the sprite
+   * Returns the sprite
    * 
    * @return the sprite attribute
    */
@@ -125,7 +129,11 @@ public class Actor {
     return sprite;
   }
 
-  public String getFileName(){
+  /**
+   * Returns the file name
+   * @return the fileName attribute
+   */
+  public String getFileName() {
     return fileName;
   }
 
@@ -140,7 +148,8 @@ public class Actor {
   }
 
   /**
-   * Getter for dx
+   * Returns the dx
+   * 
    * @return the dx attribute
    */
   public int getDX() {
@@ -148,7 +157,8 @@ public class Actor {
   }
 
   /**
-   * Setter for dx
+   * Updates the value for dx
+   * 
    * @param dx the new value for dx
    */
   public void setDX(int dx) {
@@ -156,7 +166,8 @@ public class Actor {
   }
 
   /**
-   * Getter for dy
+   * Returns the dy
+   * 
    * @return the attribute dy
    */
   public int getDY() {
@@ -164,7 +175,8 @@ public class Actor {
   }
 
   /**
-   * Setter for dy
+   * Updates the value of dy
+   * 
    * @param dy the new value for dy
    */
   public void setDY(int dy) {
@@ -172,7 +184,8 @@ public class Actor {
   }
 
   /**
-   * Getter for speed
+   * Returns the speed
+   * 
    * @return the attribute speed
    */
   public int getSpeed() {
@@ -180,7 +193,8 @@ public class Actor {
   }
 
   /**
-   * Setter for speed
+   * Updates the value of speed
+   * 
    * @param speed the new value for speed
    */
   public void setSpeed(int speed) {
@@ -188,14 +202,14 @@ public class Actor {
   }
 
   /**
-   * Draws the sprite at the x, y location. Adapts to scale of the JFrame.
+   * Draws the sprite centered at the x, y location. Adapts to scale of the JFrame.
    * 
    * @param g Graphics2D object to draw the image
-   * @param i Which JPanel is it drawn in?
+   * @param i the JPanel where the sprite will be drawn
    */
   public void draw(Graphics2D g, ImageObserver i) {
-    int offsetX=x-sprite.getWidth()/2;
-    int offsetY=y-sprite.getHeight()/2;
+    int offsetX = x - sprite.getWidth() / 2;
+    int offsetY = y - sprite.getHeight() / 2;
     g.drawImage(sprite, Utility.scale(offsetX), Utility.scale(offsetY), Utility.scale(sprite.getWidth()),
         Utility.scale(sprite.getHeight()), i);
   }
