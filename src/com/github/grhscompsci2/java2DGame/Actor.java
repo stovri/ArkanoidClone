@@ -13,8 +13,7 @@ public class Actor {
   private int dy;
   private int x;
   private int y;
-  private int w;
-  private int h;
+
   private BufferedImage sprite;
   private String fileName;
   private int speed;
@@ -71,8 +70,6 @@ public class Actor {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    this.w = sprite.getWidth();
-    this.h = sprite.getHeight();
   }
 
   /**
@@ -107,7 +104,7 @@ public class Actor {
    * @return the width attribute.
    */
   public int getWidth() {
-    return w;
+    return sprite.getWidth();
   }
 
   /**
@@ -116,7 +113,7 @@ public class Actor {
    * @return the height attribute
    */
   public int getHeight() {
-    return h;
+    return sprite.getHeight();
   }
 
   /**
