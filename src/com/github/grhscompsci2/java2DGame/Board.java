@@ -78,7 +78,6 @@ public class Board extends JPanel implements Runnable {
     try {
       this.background = ImageIO.read(Board.class.getResource(BACKGROUND_FILE_NAME));
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }

@@ -32,7 +32,6 @@ public class GameRunner extends JFrame {
 
   public static void main(String[] args) {
     EventQueue.invokeLater(() -> {
-      // TODO Auto-generated method stub
       JFrame ex = new GameRunner();
       ex.setVisible(true);
     });
