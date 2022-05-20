@@ -30,10 +30,19 @@ public class SingleComponentAspectRatioKeeperLayout implements LayoutManager {
     fakeComponent.setPreferredSize(new Dimension(0, 0));
   }
 
+  
+  /** 
+   * @param arg0
+   * @param arg1
+   */
   @Override
   public void addLayoutComponent(String arg0, Component arg1) {
   }
 
+  
+  /** 
+   * @param parent
+   */
   @Override
   public void layoutContainer(Container parent) {
     Component component = getSingleComponent(parent);
@@ -54,6 +63,11 @@ public class SingleComponentAspectRatioKeeperLayout implements LayoutManager {
     component.setBounds((int) hgap, (int) vgap, (int) targetWidth, (int) targetHeight);
   }
 
+  
+  /** 
+   * @param parent
+   * @return Component
+   */
   private Component getSingleComponent(Container parent) {
     int parentComponentCount = parent.getComponentCount();
     if (parentComponentCount > 1) {
@@ -64,6 +78,12 @@ public class SingleComponentAspectRatioKeeperLayout implements LayoutManager {
     return comp;
   }
 
+  
+  /** 
+   * @param imageSize
+   * @param boundary
+   * @return Dimension
+   */
   private Dimension getScaledDimension(Dimension imageSize, Dimension boundary) {
     double widthRatio = boundary.getWidth() / imageSize.getWidth();
     double heightRatio = boundary.getHeight() / imageSize.getHeight();
@@ -71,16 +91,30 @@ public class SingleComponentAspectRatioKeeperLayout implements LayoutManager {
     return new Dimension((int) (imageSize.width * ratio), (int) (imageSize.height * ratio));
   }
 
+  
+  /** 
+   * @param parent
+   * @return Dimension
+   */
   @Override
   public Dimension minimumLayoutSize(Container parent) {
     return preferredLayoutSize(parent);
   }
 
+  
+  /** 
+   * @param parent
+   * @return Dimension
+   */
   @Override
   public Dimension preferredLayoutSize(Container parent) {
     return getSingleComponent(parent).getPreferredSize();
   }
 
+  
+  /** 
+   * @param parent
+   */
   @Override
   public void removeLayoutComponent(Component parent) {
   }
