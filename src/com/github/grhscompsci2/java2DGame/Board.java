@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.image.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.awt.*;
 
 /**
@@ -47,7 +48,7 @@ public class Board extends JPanel implements Runnable {
     setPreferredSize(getPreferredSize());
     // Update the scale based on the size of the JPanel
     Utility.updateScale(new Dimension(background.getWidth(), background.getHeight()), getSize());
-    //Allow us to focus on this JPanel
+    // Allow us to focus on this JPanel
     setFocusable(true);
     // Initialize all actors below here
     actor = new Astronaut();
@@ -56,16 +57,18 @@ public class Board extends JPanel implements Runnable {
   /**
    * This will step through all the bullets and have them act. If the bullet is
    * out of bounds, it will remove them from the ArrayList.
+   * 
+   * @param deltaTime
    */
-  public void manageBullets() {
+  public void manageBullets(float deltaTime) {
     ArrayList<Bullet> bullets = actor.getBullets();
-    for (int i = 0; i < bullets.size(); i++) {
-      Bullet bill = bullets.get(i);
-      bill.act();
+    for (Iterator<Bullet> i = bullets.iterator(); i.hasNext();) {
+      Bullet bill = i.next();
+      bill.act(deltaTime);
       // is Bill out of bounds?
       if (bill.getX() < 0 || bill.getX() > Utility.gameWidth
           || bill.getY() < 0 || bill.getY() > Utility.gameHeight) {
-        bullets.remove(i);
+        i.remove();
       }
     }
 
@@ -129,15 +132,17 @@ public class Board extends JPanel implements Runnable {
   /**
    * This method is called once per frame. This will allow us to advance the game
    * logic every frame so the actors move and react to input.
+   * 
+   * @param deltaTime
    */
-  private void act() {
+  private void act(float deltaTime) {
     // Check for collisions between actors. Do it before they act so you can handle
     // death and other cases appropriately
     checkCollisions();
     // Have all of your actor attributes act here.
-    actor.act();
+    actor.act(deltaTime);
     // Manage your bullets
-    manageBullets();
+    manageBullets(deltaTime);
   }
 
   /**
@@ -161,19 +166,20 @@ public class Board extends JPanel implements Runnable {
     long beforeTime;
     long timeDiff;
     long sleep;
+    float deltaTime = 0;
     while (true) {
       // Sample the current time before act() and repaint() are called
-      beforeTime = System.currentTimeMillis();
+      beforeTime = System.nanoTime();
 
       // update all actors
-      act();
+      act(deltaTime);
       // force a repaint
       repaint();
 
       // how long did that take?
-      timeDiff = System.currentTimeMillis() - beforeTime;
+      timeDiff = System.nanoTime() - beforeTime;
       // we want to wait a consistent amount of time, so subtract timeDiff from DELAY
-      sleep = DELAY - timeDiff;
+      sleep = (DELAY - timeDiff) / 1000000;
 
       // If we went too long, only wait 2 milliseconds for garbage collection.
       if (sleep < 0) {
@@ -189,6 +195,7 @@ public class Board extends JPanel implements Runnable {
         JOptionPane.showMessageDialog(this, msg, "Error",
             JOptionPane.ERROR_MESSAGE);
       }
+      deltaTime = (System.nanoTime() - beforeTime) / 1000000000f;
     }
   }
 

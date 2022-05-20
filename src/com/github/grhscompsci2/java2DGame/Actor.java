@@ -15,14 +15,14 @@ import javax.imageio.ImageIO;
  * extend the Actor class.
  */
 public class Actor {
-  private int dx;
-  private int dy;
-  private int x;
-  private int y;
+  private float dx;
+  private float dy;
+  private float x;
+  private float y;
 
   private BufferedImage sprite;
   private String fileName;
-  private int speed;
+  private float speed;
 
   /**
    * Constructor that will set the image to the fileName, and set the position to
@@ -41,7 +41,7 @@ public class Actor {
    * @param y        the y coordinate of the center of the sprite
    */
   public Actor(String fileName, int x, int y) {
-    this(fileName, x, y, 2);
+    this(fileName, x, y, 50);
     loadImage();
   }
 
@@ -54,7 +54,7 @@ public class Actor {
    * @param y        the y coordinate of the sprite
    * @param speed    the speed of the sprite, in scaled pixels
    */
-  public Actor(String fileName, int x, int y, int speed) {
+  public Actor(String fileName, float x, float y, float speed) {
     this.fileName = fileName;
     this.x = x;
     this.y = y;
@@ -78,10 +78,11 @@ public class Actor {
 
   /**
    * Update the position based on the change in x and y attributes
+   * @param deltaTime
    */
-  public void act() {
-    x += dx;
-    y += dy;
+  public void act(float deltaTime) {
+    x += dx*deltaTime;
+    y += dy*deltaTime;
   }
 
   /**
@@ -89,7 +90,7 @@ public class Actor {
    * 
    * @return the x attribute
    */
-  public int getX() {
+  public float getX() {
     return x;
   }
 
@@ -98,7 +99,7 @@ public class Actor {
    * 
    * @return the y attribute
    */
-  public int getY() {
+  public float getY() {
     return y;
   }
 
@@ -152,17 +153,17 @@ public class Actor {
    * 
    * @return the dx attribute
    */
-  public int getDX() {
+  public float getDX() {
     return dx;
   }
 
   /**
    * Updates the value for dx
    * 
-   * @param dx the new value for dx
+   * @param f the new value for dx
    */
-  public void setDX(int dx) {
-    this.dx = dx;
+  public void setDX(float f) {
+    this.dx = f;
   }
 
   /**
@@ -170,17 +171,17 @@ public class Actor {
    * 
    * @return the attribute dy
    */
-  public int getDY() {
+  public float getDY() {
     return dy;
   }
 
   /**
    * Updates the value of dy
    * 
-   * @param dy the new value for dy
+   * @param f the new value for dy
    */
-  public void setDY(int dy) {
-    this.dy = dy;
+  public void setDY(float f) {
+    this.dy = f;
   }
 
   /**
@@ -188,7 +189,7 @@ public class Actor {
    * 
    * @return the attribute speed
    */
-  public int getSpeed() {
+  public float getSpeed() {
     return speed;
   }
 
@@ -208,8 +209,8 @@ public class Actor {
    * @param i the JPanel where the sprite will be drawn
    */
   public void draw(Graphics2D g, ImageObserver i) {
-    int offsetX = x - sprite.getWidth() / 2;
-    int offsetY = y - sprite.getHeight() / 2;
+    float offsetX = x - sprite.getWidth() / 2;
+    float offsetY = y - sprite.getHeight() / 2;
     g.drawImage(sprite, Utility.scale(offsetX), Utility.scale(offsetY), Utility.scale(sprite.getWidth()),
         Utility.scale(sprite.getHeight()), i);
   }
@@ -272,6 +273,6 @@ public class Actor {
    * @return a rectangle in the position and size of the sprite
    */
   public Rectangle getBounds() {
-    return new Rectangle(x, y, sprite.getWidth(), sprite.getHeight());
+    return new Rectangle((int)x, (int)y, sprite.getWidth(), sprite.getHeight());
   }
 }

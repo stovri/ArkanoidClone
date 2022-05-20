@@ -82,8 +82,8 @@ public class Astronaut extends Actor {
    * facing.
    */
   private void shoot() {
-    int vX = 0;
-    int vY = 0;
+    float vX = 0;
+    float vY = 0;
 
     // based on the fileName, which direction are we facing?
     switch (getFileName()) {

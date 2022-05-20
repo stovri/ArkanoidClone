@@ -47,10 +47,10 @@ public class Utility {
   /**
    * Automatically scales and formats the provided int
    * 
-   * @param i the int to scale
+   * @param offsetX the int to scale
    * @return the scaled int
    */
-  public static int scale(int i) {
-    return (int) Math.round(i * scaleFactor);
+  public static int scale(float offsetX) {
+    return (int) Math.round(offsetX * scaleFactor);
   }
 }
