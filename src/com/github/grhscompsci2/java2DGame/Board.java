@@ -23,7 +23,7 @@ public class Board extends JPanel implements Runnable {
   private Thread animator;
 
   // Initialize all of your actors here: players, enemies, obstacles, etc.
-  private Astronaut actor;
+  private Frog actor;
 
   /**
    * Initialize the board
@@ -47,26 +47,11 @@ public class Board extends JPanel implements Runnable {
     setPreferredSize(getPreferredSize());
     setFocusable(true);
     // Initialize all actors below here
-    actor = new Astronaut();
+    actor = new Frog();
   }
 
-  /**
-   * This will step through all the bullets and have them act. If the bullet is
-   * out of bounds, it will remove them from the ArrayList.
-   */
-  public void manageBullets() {
-    ArrayList<Bullet> bullets = actor.getBullets();
-    for (int i = 0; i < bullets.size(); i++) {
-      Bullet bill = bullets.get(i);
-      bill.act();
-      // is Bill out of bounds?
-      if (bill.getX() < 0 || bill.getX() > Utility.gameWidth
-          || bill.getY() < 0 || bill.getY() > Utility.gameHeight) {
-        bullets.remove(i);
-      }
-    }
-
-  }
+  
+  
 
   /**
    * This method will assign the BACKGROUND_FILE_NAME as the background of the
@@ -113,12 +98,7 @@ public class Board extends JPanel implements Runnable {
 
     // call other drawing stuff here
     actor.draw(g2d, this);
-    // get the array list of bullets
-    ArrayList<Bullet> bullets = actor.getBullets();
-    // draw them all
-    for (Bullet bill : bullets) {
-      bill.draw(g2d, this);
-    }
+    
 
     // This method will ensure that the display is up to date
     Toolkit.getDefaultToolkit().sync();
@@ -134,8 +114,7 @@ public class Board extends JPanel implements Runnable {
     checkCollisions();
     // Have all of your actor attributes act here.
     actor.act();
-    // Manage your bullets
-    manageBullets();
+   
   }
 
   /**

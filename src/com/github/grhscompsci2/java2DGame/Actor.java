@@ -82,6 +82,7 @@ public class Actor {
   public void act() {
     x += dx;
     y += dy;
+    
   }
 
   /**
