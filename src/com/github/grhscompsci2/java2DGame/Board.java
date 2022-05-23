@@ -1,15 +1,16 @@
 package com.github.grhscompsci2.java2DGame;
 
 import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyAdapter;
+import javax.swing.SwingUtilities;
+
+import com.github.grhscompsci2.java2DGame.actors.Actor;
+import com.github.grhscompsci2.java2DGame.actors.Astronaut;
+
 import java.awt.Graphics;
 import java.awt.image.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.awt.*;
 
 /**
@@ -17,23 +18,29 @@ import java.awt.*;
  * will need to edit the attributes to add your enemies and player classes so
  * they can draw and act here.
  */
-public class Board extends JPanel implements Runnable {
-  private final String BACKGROUND_FILE_NAME = "images/background.png";
+public class Board extends JPanel {
+  private final String BACKGROUND_FILE_NAME = "background.png";
+  // This value would probably be stored elsewhere.
+  final double GAME_HERTZ = 30.0;
+  // Calculate how many ns each frame should take for our target game hertz.
+  final double TIME_BETWEEN_UPDATES = 1000000000 / GAME_HERTZ;
+  // At the very most we will update the game this many times before a new render.
+  // If you're worried about visual hitches more than perfect timing, set this to
+  // 1.
+  final int MAX_UPDATES_BEFORE_RENDER = 5;
+  // If we are able to get as high as this FPS, don't render again.
+  final double TARGET_FPS = 60;
+  final double TARGET_TIME_BETWEEN_RENDERS = 1000000000 / TARGET_FPS;
   private BufferedImage background;
   private int frameCount = 0;
   private int fps = 0;
-  public static boolean running = false, paused = false;
-  final ArrayList<Entity> entities = new ArrayList<>();
-
-  // Initialize all of your actors here: players, enemies, obstacles, etc.
-  private Astronaut actor;
+  public boolean running = false;
+  public static boolean paused = false;
 
   /**
    * Initialize the board
    */
   public Board() {
-    // add the custom key adapter to the panel
-    addKeyListener(new TAdapter());
     // load the background image
     loadBackground();
     // set the size of the panel to the size of the background
@@ -53,7 +60,8 @@ public class Board extends JPanel implements Runnable {
    * that need to be used in the game.
    */
   private void initBoard() {
-    actor = new Astronaut();
+    // Initialize all of your actors here: players, enemies, obstacles, etc.
+    Utility.castAndCrew.add(new Astronaut());
   }
 
   /**
@@ -71,26 +79,6 @@ public class Board extends JPanel implements Runnable {
   }
 
   /**
-   * This will step through all the bullets and have them act. If the bullet is
-   * out of bounds, it will remove them from the ArrayList.
-   * 
-   * @param deltaTime
-   */
-  public void manageBullets(float deltaTime) {
-    ArrayList<Bullet> bullets = actor.getBullets();
-    for (Iterator<Bullet> i = bullets.iterator(); i.hasNext();) {
-      Bullet bill = i.next();
-      bill.act(deltaTime);
-      // is Bill out of bounds?
-      if (bill.getX() < 0 || bill.getX() > Utility.gameWidth
-          || bill.getY() < 0 || bill.getY() > Utility.gameHeight) {
-        i.remove();
-      }
-    }
-
-  }
-
-  /**
    * This method will assign the BACKGROUND_FILE_NAME as the background of the
    * JPanel. The background.png file will determine the resolution of your screen.
    * All of your other sprites should match the resolution of the background.
@@ -98,7 +86,7 @@ public class Board extends JPanel implements Runnable {
   private void loadBackground() {
     // Load the image
     try {
-      this.background = ImageIO.read(Board.class.getResource(BACKGROUND_FILE_NAME));
+      this.background = ImageIO.read(Utility.class.getResource(Utility.IMG_FOLDER + BACKGROUND_FILE_NAME));
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -119,13 +107,13 @@ public class Board extends JPanel implements Runnable {
     // Always draw this first so it will be on the bottom
     g2d.drawImage(background, 0, 0, Utility.scale(background.getWidth()), Utility.scale(background.getHeight()), this);
 
+    ArrayList<Actor> paintActors = new ArrayList<>();
+    paintActors.addAll(Utility.castAndCrew);
     // call other drawing stuff here
-    actor.draw(g2d, this);
-    // get the array list of bullets
-    ArrayList<Bullet> bullets = actor.getBullets();
-    // draw them all
-    for (Bullet bill : bullets) {
-      bill.draw(g2d, this);
+    for (Actor actor : paintActors) {
+      if (!actor.isDead()) {
+        actor.draw(g2d, this);
+      }
     }
 
     g2d.setColor(Color.BLACK);
@@ -136,22 +124,10 @@ public class Board extends JPanel implements Runnable {
 
   // Only run this in another Thread!
   public void gameLoop() {
-    // This value would probably be stored elsewhere.
-    final double GAME_HERTZ = 30.0;
-    // Calculate how many ns each frame should take for our target game hertz.
-    final double TIME_BETWEEN_UPDATES = 1000000000 / GAME_HERTZ;
-    // At the very most we will update the game this many times before a new render.
-    // If you're worried about visual hitches more than perfect timing, set this to
-    // 1.
-    final int MAX_UPDATES_BEFORE_RENDER = 5;
     // We will need the last update time.
     double lastUpdateTime = System.nanoTime();
     // Store the last time we rendered.
     double lastRenderTime = System.nanoTime();
-
-    // If we are able to get as high as this FPS, don't render again.
-    final double TARGET_FPS = 60;
-    final double TARGET_TIME_BETWEEN_RENDERS = 1000000000 / TARGET_FPS;
 
     // Simple way of finding FPS.
     int lastSecondTime = (int) (lastUpdateTime / 1000000000);
@@ -163,7 +139,8 @@ public class Board extends JPanel implements Runnable {
       if (!paused) {
         // Do as many game updates as we need to, potentially playing catchup.
         while (now - lastUpdateTime > TIME_BETWEEN_UPDATES && updateCount < MAX_UPDATES_BEFORE_RENDER) {
-          updateGame();
+          // convert nanoseconds to seconds
+          updateGame(TIME_BETWEEN_UPDATES / 1000000000);
           lastUpdateTime += TIME_BETWEEN_UPDATES;
           updateCount++;
         }
@@ -218,68 +195,26 @@ public class Board extends JPanel implements Runnable {
    * 
    * @param deltaTime
    */
-  private void act(float deltaTime) {
+  private void updateGame(double deltaTime) {
     // Check for collisions between actors. Do it before they act so you can handle
     // death and other cases appropriately
     checkCollisions();
+    Utility.clearDead();
+    Utility.addNew();
     // Have all of your actor attributes act here.
-    actor.act(deltaTime);
-    // Manage your bullets
-    manageBullets(deltaTime);
-  }
-
-  /**
-   * This method will start the thread for the animation.
-   */
-  @Override
-  public void addNotify() {
-    super.addNotify();
-
-    animator = new Thread(this);
-    animator.start();
-  }
-
-  /**
-   * This method is called once by the animator thread. It regulates the call to
-   * Thread.sleep so that each cycle is very close to the same length, unless
-   * something goes horribly wrong.
-   */
-  @Override
-  public void run() {
-    long beforeTime;
-    long timeDiff;
-    long sleep;
-    float deltaTime = 0;
-    while (true) {
-      // Sample the current time before act() and repaint() are called
-      beforeTime = System.nanoTime();
-
-      // update all actors
-      act(deltaTime);
-      // force a repaint
-      repaint();
-
-      // how long did that take?
-      timeDiff = System.nanoTime() - beforeTime;
-      // we want to wait a consistent amount of time, so subtract timeDiff from DELAY
-      sleep = (DELAY - timeDiff) / 1000000;
-
-      // If we went too long, only wait 2 milliseconds for garbage collection.
-      if (sleep < 0) {
-        sleep = 2;
-      }
-
-      // go to sleep
-      try {
-        Thread.sleep(sleep);
-      } catch (InterruptedException e) {
-        // Show a message if something goes wrong
-        String msg = String.format("Thread interrupted: %s", e.getMessage());
-        JOptionPane.showMessageDialog(this, msg, "Error",
-            JOptionPane.ERROR_MESSAGE);
-      }
-      deltaTime = (System.nanoTime() - beforeTime) / 1000000000f;
+    for (Actor actor : Utility.castAndCrew) {
+      actor.act(deltaTime);
     }
+  }
+
+  private void drawGame() {
+
+    SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        repaint();
+      }
+    });
   }
 
   /**
@@ -289,53 +224,11 @@ public class Board extends JPanel implements Runnable {
    */
   public void checkCollisions() {
     // check player against all other objects
-    /*
-     * Use this code as a sample. You will need an ArrayList of things to run into
-     * Rectangle r3 = actor.getBounds();
-     * for (Alien alien : aliens) {
-     * 
-     * Rectangle r2 = alien.getBounds();
-     * 
-     * if (r3.intersects(r2)) {
-     * 
-     * spaceship.setVisible(false);
-     * alien.setVisible(false);
-     * ingame = false;
-     * }
-     * }
-     * }
-     */
-
-  }
-
-  /**
-   * This class is used to handle the keyEvents. If you want an actor to respond
-   * to the keyboard, they need to be called in this class.
-   */
-  private class TAdapter extends KeyAdapter {
-
-    /**
-     * When a key is released, this method is called and passed the ID of the key
-     * that was released.
-     * 
-     * @param e the KeyEvent object generated by the KeyListener
-     */
-    @Override
-    public void keyReleased(KeyEvent e) {
-      // add all objects that care about keys being released here
-      actor.keyReleased(e);
-    }
-
-    /**
-     * When a key is pressed, this method is called and passed the ID of the key
-     * that was pressed.
-     * 
-     * @param e the KeyEvent object generated by the KeyListener
-     */
-    @Override
-    public void keyPressed(KeyEvent e) {
-      // add all objects that care about keys being pressed here
-      actor.keyPressed(e);
+    Rectangle boundry = this.getBounds();
+    for (Actor actor : Utility.castAndCrew) {
+      if (!boundry.contains(actor.getBounds())) {
+        actor.hitEdge();
+      }
     }
   }
 }

@@ -1,4 +1,4 @@
-package com.github.grhscompsci2.java2DGame;
+package com.github.grhscompsci2.java2DGame.actors;
 
 /**
  * This is an example bullet class that extends the Actor class. It only needs
@@ -7,8 +7,14 @@ package com.github.grhscompsci2.java2DGame;
  */
 public class Bullet extends Actor {
   public Bullet(float x, float y, float vX, float vY) {
-    super("images/bullet.png", x, y, 100.0f);
+    super("bullet.png", x, y, 100);
     setDX(vX * getSpeed());
     setDY(vY * getSpeed());
+  }
+
+  @Override
+  public void hitEdge() {
+    // TODO Auto-generated method stub
+    die();
   }
 }

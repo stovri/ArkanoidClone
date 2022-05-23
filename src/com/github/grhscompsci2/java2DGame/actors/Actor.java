@@ -1,4 +1,4 @@
-package com.github.grhscompsci2.java2DGame;
+package com.github.grhscompsci2.java2DGame.actors;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -8,15 +8,17 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import com.github.grhscompsci2.java2DGame.Utility;
+
 /**
  * This is the base class for anything that needs to move/act on the screen. You
  * should write classes that extend the actor class to make your game work. The
  * player class, enemy classes, bullet classes, and obstacle classes should all
  * extend the Actor class.
  */
-public class Actor {
-  private float dx;
-  private float dy;
+public abstract class Actor {
+  private double dx;
+  private double dy;
   private float x;
   private float y;
 
@@ -24,12 +26,14 @@ public class Actor {
   private String fileName;
   private float speed;
 
+  private boolean isDead;
+
   /**
    * Constructor that will set the image to the fileName, and set the position to
    * (0,0). This correspnds to the center of the sprite.
    */
   public Actor() {
-    this("images/no_sprite.png", 0, 0);
+    this("no_sprite.png", 0, 0);
   }
 
   /**
@@ -42,7 +46,6 @@ public class Actor {
    */
   public Actor(String fileName, int x, int y) {
     this(fileName, x, y, 50);
-    loadImage();
   }
 
   /**
@@ -61,6 +64,7 @@ public class Actor {
     this.speed = speed;
     this.dx = 0;
     this.dy = 0;
+    this.isDead=false;
     loadImage();
   }
 
@@ -70,7 +74,7 @@ public class Actor {
   private void loadImage() {
     // Load the image
     try {
-      this.sprite = ImageIO.read(Actor.class.getResource(fileName));
+      this.sprite = ImageIO.read(Utility.class.getResource(Utility.IMG_FOLDER+fileName));
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -78,11 +82,26 @@ public class Actor {
 
   /**
    * Update the position based on the change in x and y attributes
+   * 
    * @param deltaTime
+   */ 
+  public void act(double deltaTime) {
+    x += dx * deltaTime;
+    y += dy * deltaTime;
+  }
+
+  /**
+   * Draws the sprite centered at the x, y location. Adapts to scale of the
+   * JFrame.
+   * 
+   * @param g Graphics2D object to draw the image
+   * @param i the JPanel where the sprite will be drawn
    */
-  public void act(float deltaTime) {
-    x += dx*deltaTime;
-    y += dy*deltaTime;
+  public void draw(Graphics2D g, ImageObserver i) {
+    float offsetX = x - sprite.getWidth() / 2;
+    float offsetY = y - sprite.getHeight() / 2;
+    g.drawImage(sprite, Utility.scale(offsetX), Utility.scale(offsetY), Utility.scale(sprite.getWidth()),
+        Utility.scale(sprite.getHeight()), i);
   }
 
   /**
@@ -132,6 +151,7 @@ public class Actor {
 
   /**
    * Returns the file name
+   * 
    * @return the fileName attribute
    */
   public String getFileName() {
@@ -153,17 +173,17 @@ public class Actor {
    * 
    * @return the dx attribute
    */
-  public float getDX() {
+  public double getDX() {
     return dx;
   }
 
   /**
    * Updates the value for dx
    * 
-   * @param f the new value for dx
+   * @param dx2 the new value for dx
    */
-  public void setDX(float f) {
-    this.dx = f;
+  public void setDX(double dx2) {
+    this.dx = dx2;
   }
 
   /**
@@ -171,17 +191,17 @@ public class Actor {
    * 
    * @return the attribute dy
    */
-  public float getDY() {
+  public double getDY() {
     return dy;
   }
 
   /**
    * Updates the value of dy
    * 
-   * @param f the new value for dy
+   * @param dy2 the new value for dy
    */
-  public void setDY(float f) {
-    this.dy = f;
+  public void setDY(double dy2) {
+    this.dy = dy2;
   }
 
   /**
@@ -203,76 +223,21 @@ public class Actor {
   }
 
   /**
-   * Draws the sprite centered at the x, y location. Adapts to scale of the JFrame.
-   * 
-   * @param g Graphics2D object to draw the image
-   * @param i the JPanel where the sprite will be drawn
-   */
-  public void draw(Graphics2D g, ImageObserver i) {
-    float offsetX = x - sprite.getWidth() / 2;
-    float offsetY = y - sprite.getHeight() / 2;
-    g.drawImage(sprite, Utility.scale(offsetX), Utility.scale(offsetY), Utility.scale(sprite.getWidth()),
-        Utility.scale(sprite.getHeight()), i);
-  }
-
-  /**
-   * This method is called when a key is pressed. The dx and dy attributes are
-   * modified based on what keys are pressed
-   * 
-   * @param e the KeyEvent passed in from the KeyAdapter
-   */
-  public void keyPressed(KeyEvent e) {
-
-    // Get which key was pressed.
-    int key = e.getKeyCode();
-    // if it was left, subtract speed from dx.
-    if (key == KeyEvent.VK_LEFT) {
-      dx = -1 * speed;
-    }
-
-    // if it was right, add speed to dx
-    if (key == KeyEvent.VK_RIGHT) {
-      dx = speed;
-    }
-
-    // if it was up, subtract speed from dy.
-    if (key == KeyEvent.VK_UP) {
-      dy = -1 * speed;
-    }
-
-    // if it was down, add speed to dy
-    if (key == KeyEvent.VK_DOWN) {
-      dy = speed;
-    }
-  }
-
-  /**
-   * This method is called when a key is released
-   * 
-   * @param e the KeyEvent generated by the KeyAdapter
-   */
-  public void keyReleased(KeyEvent e) {
-
-    // which key was released?
-    int key = e.getKeyCode();
-
-    // if the key was left or right, reset the dx to zero
-    if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_RIGHT) {
-      dx = 0;
-    }
-
-    // if the key was up or down, reset the dy to zero
-    if (key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN) {
-      dy = 0;
-    }
-  }
-
-  /**
    * Returns the bounds of the sprite. Used for collision dectection.
    * 
    * @return a rectangle in the position and size of the sprite
    */
   public Rectangle getBounds() {
-    return new Rectangle((int)x, (int)y, sprite.getWidth(), sprite.getHeight());
+    return new Rectangle((int) x, (int) y, sprite.getWidth(), sprite.getHeight());
+  }
+
+  public void die(){
+    isDead=true;
+  }
+
+  public abstract void hitEdge();
+
+  public boolean isDead() {
+    return isDead;
   }
 }

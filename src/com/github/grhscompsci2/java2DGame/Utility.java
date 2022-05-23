@@ -1,6 +1,10 @@
 package com.github.grhscompsci2.java2DGame;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import com.github.grhscompsci2.java2DGame.actors.Actor;
 
 /**
  * This is the Utility class used by the Java 2D Game. It holds useful methods
@@ -9,7 +13,7 @@ import java.awt.*;
  * https://stackoverflow.com/questions/11959758/java-maintaining-aspect-ratio-of-jpanel-background-image/11959928#11959928
  */
 public class Utility {
-  //Default width and height
+  // Default width and height
   public static int gameWidth = 600;
   public static int gameHeight = 400;
   /**
@@ -18,6 +22,15 @@ public class Utility {
    */
   public static double scaleFactor = 1;
 
+  public static ArrayList<Actor> castAndCrew = new ArrayList<>();
+  public static ArrayList<Actor> newActors=new ArrayList<>();
+  public static boolean UP_ARROW = false;
+  public static boolean LEFT_ARROW = false;
+  public static boolean DOWN_ARROW = false;
+  public static boolean RIGHT_ARROW = false;
+  public static boolean SPACE=false;
+
+  public static final String IMG_FOLDER="images/";
   /**
    * Update the global scale factor using the background image dimensions and the
    * JFrame size
@@ -52,5 +65,24 @@ public class Utility {
    */
   public static int scale(float offsetX) {
     return (int) Math.round(offsetX * scaleFactor);
+  }
+
+  public static void addActor(Actor actor) {
+    newActors.add(actor);
+  }
+
+  public static void clearDead() {
+    Iterator<Actor> itr=castAndCrew.iterator();
+    while(itr.hasNext()){
+      Actor actor=itr.next();
+      if(actor.isDead()){
+        itr.remove();
+      }
+    }
+  }
+
+  public static void addNew() {
+    castAndCrew.addAll(newActors);
+    newActors.clear();
   }
 }
