@@ -1,7 +1,5 @@
 package com.github.grhscompsci2.java2DGame.actors;
 
-import java.util.ArrayList;
-
 import com.github.grhscompsci2.java2DGame.Utility;
 
 /**
@@ -15,6 +13,7 @@ public class Astronaut extends Actor {
   private final static String leftImg = "astronaut_left.png";
   private final static String rightImg = "astronaut_right.png";
 
+  //Flag for controlling bullet generation
   private boolean fired;
 
   /**
@@ -25,6 +24,10 @@ public class Astronaut extends Actor {
     fired = false;
   }
 
+  
+  /** 
+   * @param deltaTime
+   */
   public void act(double deltaTime) {
     double dx = 0;
     double dy = 0;
@@ -51,6 +54,15 @@ public class Astronaut extends Actor {
       shoot();
       fired = true;
     }
+    double futureX = getX() + dx * deltaTime;
+    double futureY = getY() + dy * deltaTime;
+    double max = (Math.max(getWidth(), getHeight()) / 2.0) + 1;
+    if (futureX < max || futureX > Utility.gameWidth - max) {
+      dx = 0;
+    }
+    if (futureY < max || futureY > Utility.gameHeight - max) {
+      dy = 0;
+    }
     setDX(dx);
     setDY(dy);
 
@@ -62,27 +74,41 @@ public class Astronaut extends Actor {
    * facing.
    */
   private void shoot() {
-    float vX = 0;
-    float vY = 0;
-
+    double vX = 0;
+    double vY = 0;
+    double bulX = getX();
+    double bulY = getY();
     // based on the fileName, which direction are we facing?
     switch (getFileName()) {
       case upImg:
+        // set the y velocity, and move the position to the image of the gun barrel
         vY = -1;
+        bulX += 10;
+        bulY -= getHeight() / 2;
         break;
       case downImg:
+        // set the y velocity, and move the position to the image of the gun barrel
         vY = 1;
+        bulX -= 10;
+        bulY += getHeight() / 2;
         break;
       case leftImg:
+        // set the x velocity, and move the position to the image of the gun barrel
         vX = -1;
+        bulY -= 10;
+        bulX -= getWidth() / 2;
         break;
       case rightImg:
+        // set the x velocity, and move the position to the image of the gun barrel
         vX = 1;
+        bulY += 10;
+        bulX += getWidth() / 2;
         break;
     }
-    // Create a new bullet in the castAndCrew ArrayList that has the correct position
+    // Create a new bullet in the castAndCrew ArrayList that has the correct
+    // position
     // and movement direction.
-    Utility.addActor(new Bullet(getX(), getY(), vX, vY));
+    Utility.addActor(new Bullet(bulX, bulY, vX, vY));
   }
 
   @Override
