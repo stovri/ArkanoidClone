@@ -1,4 +1,5 @@
 package com.github.grhscompsci2.java2DGame;
+
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -10,38 +11,34 @@ import javax.swing.JPanel;
 //@Slf4j
 /**
  * A Swing Layout that will shrink or enlarge keep the content of a container
- * while keeping
- * it's aspect ratio. The caveat is that only a single component is supported or
- * an exception
- * will be thrown.
- * This is the component's getPreferredSize() method that must return the
- * correct ratio. The
+ * while keeping it's aspect ratio. The caveat is that only a single component
+ * is supported or an exception will be thrown. This is the component's
+ * getPreferredSize() method that must return the correct ratio. The
  * preferredSize will not be preserved but the ratio will.
  * 
- * @author @francoismarot
- * @see https://gist.github.com/fmarot/f04346d0e989baef1f56ffd83bbf764d
+ * @see <a
+ *      href=
+ *      "https://gist.github.com/fmarot/f04346d0e989baef1f56ffd83bbf764d">SingleComponentAspectRatioKeeperLayout.java</a>
  */
 public class SingleComponentAspectRatioKeeperLayout implements LayoutManager {
 
-  /** Will be used for calculus in case no real component is in the parent */
+  /**
+   * Will be used for calculus in case no real component is in the parent
+   */
   private static Component fakeComponent = new JPanel();
 
+  /**
+   * Default constructor that will initialize the fake component
+   */
   public SingleComponentAspectRatioKeeperLayout() {
     fakeComponent.setPreferredSize(new Dimension(0, 0));
   }
 
-  
-  /** 
-   * @param arg0
-   * @param arg1
-   */
-  @Override
-  public void addLayoutComponent(String arg0, Component arg1) {
-  }
-
-  
-  /** 
-   * @param parent
+  /**
+   * This method will do all the math necessary to keep the component scaled
+   * inside the parent container while maintaining aspect ratio
+   * 
+   * @param parent the container holding the component to be scaled.
    */
   @Override
   public void layoutContainer(Container parent) {
@@ -63,10 +60,12 @@ public class SingleComponentAspectRatioKeeperLayout implements LayoutManager {
     component.setBounds((int) hgap, (int) vgap, (int) targetWidth, (int) targetHeight);
   }
 
-  
-  /** 
-   * @param parent
-   * @return Component
+  /**
+   * This method will return the single component in the container, or return the
+   * fake component if there are none.
+   * 
+   * @param parent the container
+   * @return Component the lone component
    */
   private Component getSingleComponent(Container parent) {
     int parentComponentCount = parent.getComponentCount();
@@ -78,11 +77,13 @@ public class SingleComponentAspectRatioKeeperLayout implements LayoutManager {
     return comp;
   }
 
-  
-  /** 
-   * @param imageSize
-   * @param boundary
-   * @return Dimension
+  /**
+   * This method will scale the provided image size using the provided boundary
+   * and maintian aspect ratio of the image.
+   * 
+   * @param imageSize the size of the image
+   * @param boundary  the size of the box
+   * @return Dimension the new image size that maintains the aspect ratio
    */
   private Dimension getScaledDimension(Dimension imageSize, Dimension boundary) {
     double widthRatio = boundary.getWidth() / imageSize.getWidth();
@@ -91,48 +92,47 @@ public class SingleComponentAspectRatioKeeperLayout implements LayoutManager {
     return new Dimension((int) (imageSize.width * ratio), (int) (imageSize.height * ratio));
   }
 
-  
-  /** 
-   * @param parent
-   * @return Dimension
+  /**
+   * Calculates the minimum size dimensions for the specified container, given the
+   * components it contains.
+   * 
+   * @param parent the component to be laid out
+   * @return Dimension the minimum dimensions
    */
   @Override
   public Dimension minimumLayoutSize(Container parent) {
     return preferredLayoutSize(parent);
   }
 
-  
-  /** 
-   * @param parent
-   * @return Dimension
+  /**
+   * Calculates the preferred size dimensions for the specified container, given
+   * the components it contains.
+   * 
+   * @param parent the container to be laid out
+   * @return Dimension the size of the component.
    */
   @Override
   public Dimension preferredLayoutSize(Container parent) {
     return getSingleComponent(parent).getPreferredSize();
   }
 
-  
-  /** 
-   * @param parent
+  /**
+   * This method is required to be implemented, but we do not use it
+   * 
+   * @param comp the component to be removed
    */
   @Override
-  public void removeLayoutComponent(Component parent) {
+  public void removeLayoutComponent(Component comp) {
   }
-  /*
-   * public static void main(String[] args) {
-   * JFrame frame = new JFrame();
-   * JPanel panel = new JPanel(); // the panel we want to keep it's aspect ratio
-   * panel.setPreferredSize(new Dimension(300, 600));
-   * panel.setBackground(Color.ORANGE);
+
+  /**
+   * This method is required to be implemented, but we do not use it
    * 
-   * JPanel wrapperPanel = new JPanel(new
-   * SingleComponentAspectRatioKeeperLayout());
-   * wrapperPanel.add(panel);
-   * 
-   * frame.getContentPane().add(wrapperPanel);
-   * frame.setSize(450, 450);
-   * 
-   * frame.setVisible(true);
-   * }
+   * @param name the string to be associated with the component
+   * @param comp the component to be added
    */
+  @Override
+  public void addLayoutComponent(String name, Component comp) {
+
+  }
 }

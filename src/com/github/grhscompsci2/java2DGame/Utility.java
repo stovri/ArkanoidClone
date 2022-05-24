@@ -1,6 +1,11 @@
 package com.github.grhscompsci2.java2DGame;
 
 import java.awt.*;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import com.github.grhscompsci2.java2DGame.actors.Actor;
 
 /**
  * This is the Utility class used by the Java 2D Game. It holds useful methods
@@ -9,7 +14,7 @@ import java.awt.*;
  * https://stackoverflow.com/questions/11959758/java-maintaining-aspect-ratio-of-jpanel-background-image/11959928#11959928
  */
 public class Utility {
-  //Default width and height
+  // Default width and height
   public static int gameWidth = 600;
   public static int gameHeight = 400;
   /**
@@ -18,6 +23,26 @@ public class Utility {
    */
   public static double scaleFactor = 1;
 
+  // ArrayList of all actors in the game
+  public static ArrayList<Actor> castAndCrew = new ArrayList<>();
+  // ArrayList of all actors that need to be added to the game so we can avoid the
+  // "Concurrent modification" error
+  public static ArrayList<Actor> newActors = new ArrayList<>();
+  //booleans to hold the keypresses
+  public static boolean UP_ARROW = false;
+  public static boolean LEFT_ARROW = false;
+  public static boolean DOWN_ARROW = false;
+  public static boolean RIGHT_ARROW = false;
+  public static boolean SPACE = false;
+
+  /**
+   * This method will return the URL for the specified image
+   * @param fileName the full name of the image
+   * @return the URL of the image
+   */
+  public static URL getImageURL(String fileName){
+    return Utility.class.getResource("images/"+fileName);
+  }
   /**
    * Update the global scale factor using the background image dimensions and the
    * JFrame size
@@ -50,7 +75,26 @@ public class Utility {
    * @param offsetX the int to scale
    * @return the scaled int
    */
-  public static int scale(float offsetX) {
+  public static int scale(double offsetX) {
     return (int) Math.round(offsetX * scaleFactor);
+  }
+
+  public static void addActor(Actor actor) {
+    newActors.add(actor);
+  }
+
+  public static void clearDead() {
+    Iterator<Actor> itr = castAndCrew.iterator();
+    while (itr.hasNext()) {
+      Actor actor = itr.next();
+      if (actor.isDead()) {
+        itr.remove();
+      }
+    }
+  }
+
+  public static void addNew() {
+    castAndCrew.addAll(newActors);
+    newActors.clear();
   }
 }
