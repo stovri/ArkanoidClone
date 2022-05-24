@@ -1,7 +1,6 @@
 package com.github.grhscompsci2.java2DGame.actors;
 
 import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
 import java.awt.image.*;
 import java.awt.Rectangle;
 import java.io.IOException;
@@ -28,43 +27,32 @@ public abstract class Actor {
 
   private boolean isDead;
 
-  /**
-   * Constructor that will set the image to the fileName, and set the position to
-   * (0,0). This correspnds to the center of the sprite.
-   */
-  public Actor() {
-    this("no_sprite.png", 0, 0);
-  }
+  // Store what type of actor this is
+  public static enum Type {
+    player, enemy, bullet, obstacle
+  };
+
+  private Type type;
 
   /**
    * Constructor that will set the image to the fileName and the position to the
-   * provided coordinates.
+   * provided coordinates, and set the speed and type of the actor.
    * 
    * @param fileName the relative location of the file ("images/filename.png")
-   * @param x        the x coordinate of the center of the sprite
-   * @param y        the y coordinate of the center of the sprite
+   * @param x        the x coordinate of the sprite
+   * @param y        the y coordinate of the sprite
+   * @param speed    the speed of the sprite, in scaled pixels
+   * @param type     the type of actor
    */
-  public Actor(String fileName, int x, int y) {
-    this(fileName, x, y, 50);
-  }
-
-  /**
-   * Constructor that will set the image to the fileName and the position to the
-   * provided coordinates, and set the speed of the actor.
-   * 
-   * @param fileName the relative location of the file ("images/filename.png")
-   * @param bulX        the x coordinate of the sprite
-   * @param bulY        the y coordinate of the sprite
-   * @param d    the speed of the sprite, in scaled pixels
-   */
-  public Actor(String fileName, double bulX, double bulY, double d) {
+  public Actor(String fileName, double x, double y, double speed, Type type) {
     this.fileName = fileName;
-    this.x = bulX;
-    this.y = bulY;
-    this.speed = d;
+    this.x = x;
+    this.y = y;
+    this.speed = speed;
+    this.type = type;
     this.dx = 0;
     this.dy = 0;
-    this.isDead=false;
+    this.isDead = false;
     loadImage();
   }
 
@@ -74,7 +62,7 @@ public abstract class Actor {
   private void loadImage() {
     // Load the image
     try {
-      this.sprite = ImageIO.read(Utility.class.getResource(Utility.IMG_FOLDER+fileName));
+      this.sprite = ImageIO.read(Utility.getImageURL(fileName));
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -83,8 +71,8 @@ public abstract class Actor {
   /**
    * Update the position based on the change in x and y attributes
    * 
-   * @param deltaTime
-   */ 
+   * @param deltaTime the number of seconds since the last tick
+   */
   public void act(double deltaTime) {
     x += dx * deltaTime;
     y += dy * deltaTime;
@@ -94,14 +82,14 @@ public abstract class Actor {
    * Draws the sprite centered at the x, y location. Adapts to scale of the
    * JFrame.
    * 
-   * @param g Graphics2D object to draw the image
-   * @param i the JPanel where the sprite will be drawn
+   * @param g             Graphics2D object to draw the image
+   * @param imageObserver the JPanel where the sprite will be drawn
    */
-  public void draw(Graphics2D g, ImageObserver i) {
+  public void draw(Graphics2D g, ImageObserver imageObserver) {
     double offsetX = x - sprite.getWidth() / 2;
     double offsetY = y - sprite.getHeight() / 2;
     g.drawImage(sprite, Utility.scale(offsetX), Utility.scale(offsetY), Utility.scale(sprite.getWidth()),
-        Utility.scale(sprite.getHeight()), i);
+        Utility.scale(sprite.getHeight()), imageObserver);
   }
 
   /**
@@ -231,13 +219,51 @@ public abstract class Actor {
     return new Rectangle((int) x, (int) y, sprite.getWidth(), sprite.getHeight());
   }
 
-  public void die(){
-    isDead=true;
+  /**
+   * When the actor needs to be removed from the castAndCrew array list
+   */
+  public void die() {
+    isDead = true;
   }
 
+  /**
+   * This method is called during collision dection when the actor bounds have hit
+   * the board bounds
+   */
   public abstract void hitEdge();
 
+  /**
+   * This method is called during collision detection when the actor bounds have
+   * intersected with another actor's bounds
+   * 
+   * @param actor the collided actor
+   */
+  public abstract void hitActor(Actor actor);
+
+  /**
+   * Gets the life or death status of the actor
+   * 
+   * @return isDead attribute
+   */
   public boolean isDead() {
     return isDead;
+  }
+
+  /**
+   * Gets the type of the actor
+   * 
+   * @return the type attribute
+   */
+  public Type getType() {
+    return type;
+  }
+
+  /**
+   * Sets the type of the actor
+   * 
+   * @param type the new actor type
+   */
+  public void setType(Type type) {
+    this.type = type;
   }
 }

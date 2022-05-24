@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"com.github.grhscompsci2.java2DGame"}]
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"com.github.grhscompsci2.java2DGame"},{"l":"com.github.grhscompsci2.java2DGame.actors"}]

@@ -13,22 +13,26 @@ public class Astronaut extends Actor {
   private final static String leftImg = "astronaut_left.png";
   private final static String rightImg = "astronaut_right.png";
 
-  //Flag for controlling bullet generation
+  // Flag for controlling bullet generation
   private boolean fired;
 
   /**
    * Class constructor that will start the Astronaut off at (0,0), facing right
    */
   public Astronaut() {
-    super(rightImg, Utility.gameWidth / 2, Utility.gameHeight / 2, 50);
+    super(rightImg, Utility.gameWidth / 2, Utility.gameHeight / 2, 50, Type.player);
     fired = false;
   }
 
-  
-  /** 
-   * @param deltaTime
+  /**
+   * This method is called each tick to update the sprite of the astronaut and use
+   * the keyboard input to change the speed in each direction. It also checks the
+   * limits and makes sure the astronaut does not exit the board.
+   * 
+   * @param deltaTime the number of seconds since the last tick.
    */
   public void act(double deltaTime) {
+    // create new changes in x and y
     double dx = 0;
     double dy = 0;
     if (Utility.UP_ARROW) {
@@ -47,25 +51,34 @@ public class Astronaut extends Actor {
       setImage(rightImg);
       dx = getSpeed();
     }
-    if (!Utility.SPACE) {
+    // If we have fired a bullet and released the space bar, set the fired flag to
+    // false
+    if (fired && !Utility.SPACE) {
       fired = false;
     }
+    // If we have pressed the space bar and not set the fired flag yet, shoot
     if (Utility.SPACE && !fired) {
       shoot();
       fired = true;
     }
+
+    // check where our dx and dy values will send us
     double futureX = getX() + dx * deltaTime;
     double futureY = getY() + dy * deltaTime;
+    // Get half the width or height of the sprite, whichever is largest
     double max = (Math.max(getWidth(), getHeight()) / 2.0) + 1;
+    // If the new position will send us off the screen, set the dx or dy to zero
     if (futureX < max || futureX > Utility.gameWidth - max) {
       dx = 0;
     }
     if (futureY < max || futureY > Utility.gameHeight - max) {
       dy = 0;
     }
+    // update the dx and dy officially
     setDX(dx);
     setDY(dy);
 
+    // actually move the astronaut
     super.act(deltaTime);
   }
 
@@ -74,8 +87,10 @@ public class Astronaut extends Actor {
    * facing.
    */
   private void shoot() {
+    // vX and vY are the directions the bullet will go
     double vX = 0;
     double vY = 0;
+    // set the bullet position to the current position
     double bulX = getX();
     double bulY = getY();
     // based on the fileName, which direction are we facing?
@@ -106,15 +121,30 @@ public class Astronaut extends Actor {
         break;
     }
     // Create a new bullet in the castAndCrew ArrayList that has the correct
-    // position
-    // and movement direction.
+    // position and movement direction.
     Utility.addActor(new Bullet(bulX, bulY, vX, vY));
   }
 
+  /**
+   * This method is called during collision dection when the actor bounds have hit
+   * the board bounds
+   */
   @Override
   public void hitEdge() {
-    // TODO Auto-generated method stub
+    // If we hit the edge of the screen, what do we do?
 
+  }
+
+  /**
+   * This method is called during collision detection when the actor bounds have
+   * intersected with another actor's bounds
+   * 
+   * @param actor the collided actor
+   */
+  @Override
+  public void hitActor(Actor actor) {
+    // TODO Auto-generated method stub
+    // nothing yet...
   }
 
 }

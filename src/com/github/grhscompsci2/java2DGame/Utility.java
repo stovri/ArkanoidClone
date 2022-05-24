@@ -1,6 +1,7 @@
 package com.github.grhscompsci2.java2DGame;
 
 import java.awt.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -22,15 +23,26 @@ public class Utility {
    */
   public static double scaleFactor = 1;
 
+  // ArrayList of all actors in the game
   public static ArrayList<Actor> castAndCrew = new ArrayList<>();
-  public static ArrayList<Actor> newActors=new ArrayList<>();
+  // ArrayList of all actors that need to be added to the game so we can avoid the
+  // "Concurrent modification" error
+  public static ArrayList<Actor> newActors = new ArrayList<>();
+  //booleans to hold the keypresses
   public static boolean UP_ARROW = false;
   public static boolean LEFT_ARROW = false;
   public static boolean DOWN_ARROW = false;
   public static boolean RIGHT_ARROW = false;
-  public static boolean SPACE=false;
+  public static boolean SPACE = false;
 
-  public static final String IMG_FOLDER="images/";
+  /**
+   * This method will return the URL for the specified image
+   * @param fileName the full name of the image
+   * @return the URL of the image
+   */
+  public static URL getImageURL(String fileName){
+    return Utility.class.getResource("images/"+fileName);
+  }
   /**
    * Update the global scale factor using the background image dimensions and the
    * JFrame size
@@ -72,10 +84,10 @@ public class Utility {
   }
 
   public static void clearDead() {
-    Iterator<Actor> itr=castAndCrew.iterator();
-    while(itr.hasNext()){
-      Actor actor=itr.next();
-      if(actor.isDead()){
+    Iterator<Actor> itr = castAndCrew.iterator();
+    while (itr.hasNext()) {
+      Actor actor = itr.next();
+      if (actor.isDead()) {
         itr.remove();
       }
     }

@@ -86,7 +86,7 @@ public class Board extends JPanel {
   private void loadBackground() {
     // Load the image
     try {
-      this.background = ImageIO.read(Utility.class.getResource(Utility.IMG_FOLDER + BACKGROUND_FILE_NAME));
+      this.background = ImageIO.read(Utility.getImageURL(BACKGROUND_FILE_NAME));
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -116,8 +116,8 @@ public class Board extends JPanel {
       }
     }
 
-    g2d.setColor(Color.BLACK);
-    g2d.drawString("FPS: " + fps, 5, 10);
+    //g2d.setColor(Color.BLACK);
+    //g2d.drawString("FPS: " + fps, 5, 10);
 
     frameCount++;
   }
@@ -159,7 +159,7 @@ public class Board extends JPanel {
         // Update the frames we got.
         int thisSecond = (int) (lastUpdateTime / 1000000000);
         if (thisSecond > lastSecondTime) {
-          System.out.println("NEW SECOND " + thisSecond + " " + frameCount);
+          //System.out.println("NEW SECOND " + thisSecond + " " + frameCount);
           fps = frameCount;
           frameCount = 0;
           lastSecondTime = thisSecond;
@@ -193,7 +193,7 @@ public class Board extends JPanel {
    * This method is called once per frame. This will allow us to advance the game
    * logic every frame so the actors move and react to input.
    * 
-   * @param deltaTime
+   * @param deltaTime the time elapsed since last tick
    */
   private void updateGame(double deltaTime) {
     // Check for collisions between actors. Do it before they act so you can handle
