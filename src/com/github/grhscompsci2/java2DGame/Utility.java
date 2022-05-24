@@ -63,7 +63,7 @@ public class Utility {
    * @param offsetX the int to scale
    * @return the scaled int
    */
-  public static int scale(float offsetX) {
+  public static int scale(double offsetX) {
     return (int) Math.round(offsetX * scaleFactor);
   }
 

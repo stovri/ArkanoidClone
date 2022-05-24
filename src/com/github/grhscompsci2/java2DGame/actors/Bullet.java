@@ -6,8 +6,8 @@ package com.github.grhscompsci2.java2DGame.actors;
  * Board class.
  */
 public class Bullet extends Actor {
-  public Bullet(float x, float y, float vX, float vY) {
-    super("bullet.png", x, y, 100);
+  public Bullet(double bulX, double bulY, double vX, double vY) {
+    super("bullet.png", bulX, bulY, 100);
     setDX(vX * getSpeed());
     setDY(vY * getSpeed());
   }

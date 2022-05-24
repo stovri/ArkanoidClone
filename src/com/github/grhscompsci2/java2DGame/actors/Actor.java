@@ -19,12 +19,12 @@ import com.github.grhscompsci2.java2DGame.Utility;
 public abstract class Actor {
   private double dx;
   private double dy;
-  private float x;
-  private float y;
+  private double x;
+  private double y;
 
   private BufferedImage sprite;
   private String fileName;
-  private float speed;
+  private double speed;
 
   private boolean isDead;
 
@@ -53,15 +53,15 @@ public abstract class Actor {
    * provided coordinates, and set the speed of the actor.
    * 
    * @param fileName the relative location of the file ("images/filename.png")
-   * @param x        the x coordinate of the sprite
-   * @param y        the y coordinate of the sprite
-   * @param speed    the speed of the sprite, in scaled pixels
+   * @param bulX        the x coordinate of the sprite
+   * @param bulY        the y coordinate of the sprite
+   * @param d    the speed of the sprite, in scaled pixels
    */
-  public Actor(String fileName, float x, float y, float speed) {
+  public Actor(String fileName, double bulX, double bulY, double d) {
     this.fileName = fileName;
-    this.x = x;
-    this.y = y;
-    this.speed = speed;
+    this.x = bulX;
+    this.y = bulY;
+    this.speed = d;
     this.dx = 0;
     this.dy = 0;
     this.isDead=false;
@@ -98,8 +98,8 @@ public abstract class Actor {
    * @param i the JPanel where the sprite will be drawn
    */
   public void draw(Graphics2D g, ImageObserver i) {
-    float offsetX = x - sprite.getWidth() / 2;
-    float offsetY = y - sprite.getHeight() / 2;
+    double offsetX = x - sprite.getWidth() / 2;
+    double offsetY = y - sprite.getHeight() / 2;
     g.drawImage(sprite, Utility.scale(offsetX), Utility.scale(offsetY), Utility.scale(sprite.getWidth()),
         Utility.scale(sprite.getHeight()), i);
   }
@@ -109,7 +109,7 @@ public abstract class Actor {
    * 
    * @return the x attribute
    */
-  public float getX() {
+  public double getX() {
     return x;
   }
 
@@ -118,7 +118,7 @@ public abstract class Actor {
    * 
    * @return the y attribute
    */
-  public float getY() {
+  public double getY() {
     return y;
   }
 
@@ -209,7 +209,7 @@ public abstract class Actor {
    * 
    * @return the attribute speed
    */
-  public float getSpeed() {
+  public double getSpeed() {
     return speed;
   }
 
