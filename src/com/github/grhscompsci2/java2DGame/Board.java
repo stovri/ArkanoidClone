@@ -6,6 +6,7 @@ import javax.swing.SwingUtilities;
 
 import com.github.grhscompsci2.java2DGame.actors.Actor;
 import com.github.grhscompsci2.java2DGame.actors.Astronaut;
+import com.github.grhscompsci2.java2DGame.actors.Frog;
 
 import java.awt.Graphics;
 import java.awt.image.*;
@@ -61,7 +62,7 @@ public class Board extends JPanel {
    */
   private void initBoard() {
     // Initialize all of your actors here: players, enemies, obstacles, etc.
-    Utility.castAndCrew.add(new Astronaut());
+    Utility.castAndCrew.add(new Frog());
   }
 
   /**
