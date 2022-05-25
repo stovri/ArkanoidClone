@@ -216,7 +216,8 @@ public abstract class Actor {
    * @return a rectangle in the position and size of the sprite
    */
   public Rectangle getBounds() {
-    return new Rectangle((int) x, (int) y, sprite.getWidth(), sprite.getHeight());
+    return new Rectangle((int) (x - sprite.getWidth() / 2), (int) (y - sprite.getWidth() / 2), sprite.getWidth(),
+        sprite.getHeight());
   }
 
   /**

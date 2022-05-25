@@ -8,7 +8,6 @@ import com.github.grhscompsci2.java2DGame.actors.Actor;
 import com.github.grhscompsci2.java2DGame.actors.Astronaut;
 import com.github.grhscompsci2.java2DGame.actors.Frog;
 
-import java.awt.Graphics;
 import java.awt.image.*;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -225,7 +224,7 @@ public class Board extends JPanel {
    */
   public void checkCollisions() {
     // check player against all other objects
-    Rectangle boundry = this.getBounds();
+    Rectangle boundry = new Rectangle(Utility.gameWidth,Utility.gameHeight);
     for (Actor actor : Utility.castAndCrew) {
       if (!boundry.contains(actor.getBounds())) {
         actor.hitEdge();
