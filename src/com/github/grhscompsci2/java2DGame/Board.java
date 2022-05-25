@@ -24,6 +24,7 @@ public class Board extends JPanel implements Runnable {
 
   // Initialize all of your actors here: players, enemies, obstacles, etc.
   private Frog actor;
+  private Car car1;
 
   /**
    * Initialize the board
@@ -48,6 +49,7 @@ public class Board extends JPanel implements Runnable {
     setFocusable(true);
     // Initialize all actors below here
     actor = new Frog();
+    car1 = new Car();
   }
 
   
@@ -66,8 +68,9 @@ public class Board extends JPanel implements Runnable {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
+    Utility.updateScale(new Dimension(background.getWidth(), background.getHeight()), getSize());
   }
-
+  
   /**
    * Returns the preferred size of the background. Used to set the starting size
    * of the JPanel window.
@@ -98,6 +101,7 @@ public class Board extends JPanel implements Runnable {
 
     // call other drawing stuff here
     actor.draw(g2d, this);
+    car1.draw(g2d, this);
     
 
     // This method will ensure that the display is up to date
@@ -114,6 +118,7 @@ public class Board extends JPanel implements Runnable {
     checkCollisions();
     // Have all of your actor attributes act here.
     actor.act();
+    car1.act();
    
   }
 
