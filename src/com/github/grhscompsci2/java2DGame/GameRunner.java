@@ -51,7 +51,8 @@ public class GameRunner {
     // resizes the game window to the preferred size of the Board
     frame.pack();
     // set the title
-    frame.setTitle("Pong!");
+
+    frame.setTitle("FROGGER");
 
     // put the window in the center of the screen
     frame.setLocationRelativeTo(null);

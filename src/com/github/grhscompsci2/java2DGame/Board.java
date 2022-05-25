@@ -6,6 +6,7 @@ import javax.swing.SwingUtilities;
 
 import com.github.grhscompsci2.java2DGame.actors.Actor;
 import com.github.grhscompsci2.java2DGame.actors.Astronaut;
+import com.github.grhscompsci2.java2DGame.actors.Frog;
 
 import java.awt.image.*;
 import java.io.IOException;
@@ -93,9 +94,9 @@ public class Board extends JPanel {
    */
   private void initBoard() {
     // Initialize all of your actors here: players, enemies, obstacles, etc.
-    Utility.castAndCrew.add(new Astronaut());
+    Utility.castAndCrew.add(new Frog());
   }
-
+  
   /**
    * Returns the preferred size of the background. Used to set the starting size
    * of the JPanel window.
@@ -266,6 +267,7 @@ public class Board extends JPanel {
    * small games.
    */
   public void checkCollisions() {
+
     // get the current bounds of the play area
     Rectangle boundry = new Rectangle(Utility.gameWidth, Utility.gameHeight);
 
