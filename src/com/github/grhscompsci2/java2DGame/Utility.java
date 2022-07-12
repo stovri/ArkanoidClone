@@ -28,7 +28,7 @@ public class Utility {
   // ArrayList of all actors that need to be added to the game so we can avoid the
   // "Concurrent modification" error
   public static ArrayList<Actor> newActors = new ArrayList<>();
-  //booleans to hold the keypresses
+  // booleans to hold the keypresses
   public static boolean UP_ARROW = false;
   public static boolean LEFT_ARROW = false;
   public static boolean DOWN_ARROW = false;
@@ -37,12 +37,14 @@ public class Utility {
 
   /**
    * This method will return the URL for the specified image
+   * 
    * @param fileName the full name of the image
    * @return the URL of the image
    */
-  public static URL getImageURL(String fileName){
-    return Utility.class.getResource("images/"+fileName);
+  public static URL getImageURL(String fileName) {
+    return Utility.class.getResource("images/" + fileName);
   }
+
   /**
    * Update the global scale factor using the background image dimensions and the
    * JFrame size

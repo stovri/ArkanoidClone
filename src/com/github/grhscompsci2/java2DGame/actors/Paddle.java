@@ -9,17 +9,28 @@ import com.github.grhscompsci2.java2DGame.Utility;
  */
 public class Paddle extends Actor {
   private final static String img = "paddle.png";
-  public Shadow shadow;
+  private Ball ball;
+  private boolean ballLaunched;
 
   /**
-   * Class constructor that will start the Astronaut off at (0,0), facing right
+   * Class constructor that will start the paddle off at the bottom
    */
   public Paddle() {
-    super(img, Utility.gameWidth / 2, Utility.gameHeight / 2, 50, Type.player);
-    shadow=new Shadow("paddle_shadow.png",getX(),getY(),getWidth(),getHeight());
-    Utility.addActor(shadow);
+    super(img, Utility.gameWidth / 2, Utility.gameHeight - 16, 150, Type.player);
+    createBall();
   }
 
+  private void createBall() {
+    ballLaunched=false;
+    ball = new Ball(getX(), getY());
+    Utility.addActor(ball);
+  }
+
+  private void launchBall(){
+    ball.setDY(-1* ball.getSpeed());
+    ball.setDX(0);
+    ballLaunched=true;
+  }
   /**
    * This method is called each tick to update the sprite of the astronaut and use
    * the keyboard input to change the speed in each direction. It also checks the
@@ -36,31 +47,24 @@ public class Paddle extends Actor {
     if (Utility.RIGHT_ARROW) {
       dx = getSpeed();
     }
-
+    if(Utility.SPACE&&!ballLaunched){
+      launchBall();
+    }
     // check where our dx and dy values will send us
     double futureX = getX() + dx * deltaTime;
     // Get half the width or height of the sprite, whichever is largest
-    double max = (getHeight() / 2.0) + 1;
+    double max = (getWidth() / 2.0) + getSpeed() * deltaTime / 2 + 4;
     // If the new position will send us off the screen, set the dx or dy to zero
     if (futureX < max || futureX > Utility.gameWidth - max) {
       dx = 0;
     }
-
     // update the dx and dy officially
     setDX(dx);
-    shadow.setDX(dx+getWidth()/3);
-    // actually move the astronaut
+    if(!ballLaunched){
+      ball.setDX(dx);
+    }
+    // actually move
     super.act(deltaTime);
-  }
-
-  /**
-   * This method is called during collision dection when the actor bounds have hit
-   * the board bounds
-   */
-  @Override
-  public void hitEdge() {
-    // If we hit the edge of the screen, what do we do?
-
   }
 
   /**

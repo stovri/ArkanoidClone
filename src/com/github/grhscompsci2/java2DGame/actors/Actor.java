@@ -30,7 +30,7 @@ public abstract class Actor {
 
   // Store what type of actor this is
   public static enum Type {
-    player, enemy, bullet, obstacle
+    player, enemy, bullet, obstacle, brick
   };
 
   private Type type;
@@ -175,10 +175,10 @@ public abstract class Actor {
   /**
    * Updates the value for dx
    * 
-   * @param dx2 the new value for dx
+   * @param dx the new value for dx
    */
-  public void setDX(double dx2) {
-    this.dx = dx2;
+  public void setDX(double dx) {
+    this.dx = dx;
   }
 
   /**
@@ -193,10 +193,10 @@ public abstract class Actor {
   /**
    * Updates the value of dy
    * 
-   * @param dy2 the new value for dy
+   * @param dy the new value for dy
    */
-  public void setDY(double dy2) {
-    this.dy = dy2;
+  public void setDY(double dy) {
+    this.dy = dy;
   }
 
   /**
@@ -223,7 +223,7 @@ public abstract class Actor {
    * @return a rectangle in the position and size of the sprite
    */
   public Rectangle getBounds() {
-    return new Rectangle((int) (x - sprite.getWidth() / 2), (int) (y - sprite.getWidth() / 2), sprite.getWidth(),
+    return new Rectangle((int) (x - sprite.getWidth() / 2), (int) (y - sprite.getHeight() / 2), sprite.getWidth(),
         sprite.getHeight());
   }
 
@@ -233,12 +233,6 @@ public abstract class Actor {
   public void die() {
     isDead = true;
   }
-
-  /**
-   * This method is called during collision dection when the actor bounds have hit
-   * the board bounds
-   */
-  public abstract void hitEdge();
 
   /**
    * This method is called during collision detection when the actor bounds have

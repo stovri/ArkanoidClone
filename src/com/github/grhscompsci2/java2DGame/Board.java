@@ -5,7 +5,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import com.github.grhscompsci2.java2DGame.actors.Actor;
-import com.github.grhscompsci2.java2DGame.actors.Astronaut;
+import com.github.grhscompsci2.java2DGame.actors.GreenBrick;
+import com.github.grhscompsci2.java2DGame.actors.Paddle;
 
 import java.awt.image.*;
 import java.io.IOException;
@@ -92,10 +93,14 @@ public class Board extends JPanel {
    * that need to be used in the game.
    */
   private void initBoard() {
+
     // Initialize all of your actors here: players, enemies, obstacles, etc.
-    Utility.castAndCrew.add(new Astronaut());
+    Utility.castAndCrew.add(new Paddle());
+    for(int i=0;i<10;i++){
+      Utility.castAndCrew.add(new GreenBrick(i*16+16, 64));
+    }
   }
-  
+
   /**
    * Returns the preferred size of the background. Used to set the starting size
    * of the JPanel window.
@@ -140,7 +145,7 @@ public class Board extends JPanel {
     g2d.drawImage(background, 0, 0, Utility.scale(background.getWidth()), Utility.scale(background.getHeight()), this);
     if (debugMode) {
       g2d.setColor(Color.MAGENTA);
-      g2d.drawRect(0, 0, background.getWidth(), background.getHeight());
+      g2d.drawRect(0, 0, Utility.scale(background.getWidth()), Utility.scale(background.getHeight()));
     }
     ArrayList<Actor> paintActors = new ArrayList<>();
     paintActors.addAll(Utility.castAndCrew);
@@ -213,12 +218,11 @@ public class Board extends JPanel {
           Thread.yield();
 
           // This stops the app from consuming all your CPU. It makes this slightly less
-          // accurate, but is worth it.
-          // You can remove this line and it will still work (better), your CPU just
-          // climbs on certain OSes.
-          // FYI on some OS's this can cause pretty bad stuttering. Scroll down and have a
-          // look at different peoples' solutions to this.
-          // On my OS it does not unpuase the game if i take this away
+          // accurate, but is worth it. You can remove this line and it will still work
+          // (better), your CPU just climbs on certain OSes. FYI on some OS's this can
+          // cause pretty bad stuttering. Scroll down and have a look at different
+          // peoples' solutions to this. On my OS it does not unpuase the game if i take
+          // this away
           try {
             Thread.sleep(1);
           } catch (Exception e) {
@@ -267,25 +271,22 @@ public class Board extends JPanel {
    */
   public void checkCollisions() {
 
-    // get the current bounds of the play area
-    Rectangle boundry = new Rectangle(Utility.gameWidth, Utility.gameHeight);
-
     // Step through all of the actors
     for (Actor actor : Utility.castAndCrew) {
       // don't check the dead
-      if (!actor.isDead()) {
-        // if the actor is outside of the bounds
-        if (!boundry.contains(actor.getBounds())) {
-          actor.hitEdge();
-        }
+      //if (!actor.isDead()) {
         // step through all of the current actors, again
         for (Actor other : Utility.castAndCrew) {
           // if the other actor is not dead, and we are not checking against ourself
-          if (!other.isDead() && actor != other) {
-            actor.hitActor(other);
+          if (/*!other.isDead() && */actor != other) {
+            Rectangle a=actor.getBounds();
+            Rectangle b=other.getBounds();
+            if (a.intersects(b)) {
+              actor.hitActor(other);
+            }
           }
         }
-      }
+      //}
     }
   }
 }
