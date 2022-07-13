@@ -26,18 +26,12 @@ public class Ball extends Actor {
   }
 
   private void reflect(Actor actor) {
-    //Special case of no dX
-    /*if(getDX()==0){
-      setDY(-1*getDY());
+    Rectangle overlap = actor.getBounds().intersection(getBounds());
+    if (overlap.getWidth() >= overlap.getHeight()) {
+      setDY(-1 * getDY());
+    } else {
+      setDX(-1 * getDX());
     }
-    else{*/
-      Rectangle overlap=actor.getBounds().intersection(getBounds());
-      if (overlap.getWidth()>=overlap.getHeight()) {
-        setDY(-1 * getDY());
-      } else {
-        setDX(-1 * getDX());
-      }  
-    //}
   }
 
   private void bounce(Actor actor) {

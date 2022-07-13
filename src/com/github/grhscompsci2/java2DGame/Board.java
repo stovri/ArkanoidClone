@@ -5,7 +5,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import com.github.grhscompsci2.java2DGame.actors.Actor;
-import com.github.grhscompsci2.java2DGame.actors.Ball;
 import com.github.grhscompsci2.java2DGame.actors.GreenBrick;
 import com.github.grhscompsci2.java2DGame.actors.Paddle;
 import com.github.grhscompsci2.java2DGame.actors.Actor.Type;
@@ -274,23 +273,24 @@ public class Board extends JPanel {
    * small games.
    */
   public void checkCollisions() {
-
     // Step through all of the actors
     for (Actor actor : Utility.castAndCrew) {
-      //if the current actor is a bullet
+      // if the current actor is a bullet
       if (actor.getType() == Type.bullet) {
-        boolean contact=false;
+        // We have not hit anything yet
+        boolean contact = false;
         // step through all of the current actors, again
         for (Actor other : Utility.castAndCrew) {
-          // if we are not checking against another bullet
+          // if we are not checking against another bullet or ourselves
           if (other.getType() != Type.bullet) {
             Rectangle a = actor.getBounds();
             Rectangle b = other.getBounds();
-            // Do our rectangles intersect?
-            if (!contact&&a.intersects(b)) {
+            // Have we not hitsomething already, and do our rectangles intersect?
+            if (!contact && a.intersects(b)) {
               actor.hitActor(other);
               other.hitActor(actor);
-              contact=true;
+              // only let the current actor hit one thing per collision detection
+              contact = true;
             }
           }
         }

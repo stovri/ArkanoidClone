@@ -21,16 +21,17 @@ public class Paddle extends Actor {
   }
 
   private void createBall() {
-    ballLaunched=false;
+    ballLaunched = false;
     ball = new Ball(getX(), getY());
     Utility.addActor(ball);
   }
 
-  private void launchBall(){
-    ball.setDY(-1* ball.getSpeed());
+  private void launchBall() {
+    ball.setDY(-1 * ball.getSpeed());
     ball.setDX(0);
-    ballLaunched=true;
+    ballLaunched = true;
   }
+
   /**
    * This method is called each tick to update the sprite of the astronaut and use
    * the keyboard input to change the speed in each direction. It also checks the
@@ -47,7 +48,7 @@ public class Paddle extends Actor {
     if (Utility.RIGHT_ARROW) {
       dx = getSpeed();
     }
-    if(Utility.SPACE&&!ballLaunched){
+    if (Utility.SPACE && !ballLaunched) {
       launchBall();
     }
     // check where our dx and dy values will send us
@@ -60,7 +61,7 @@ public class Paddle extends Actor {
     }
     // update the dx and dy officially
     setDX(dx);
-    if(!ballLaunched){
+    if (!ballLaunched) {
       ball.setDX(dx);
     }
     // actually move
