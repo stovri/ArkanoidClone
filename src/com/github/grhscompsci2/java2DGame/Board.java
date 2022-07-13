@@ -5,8 +5,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import com.github.grhscompsci2.java2DGame.actors.Actor;
+import com.github.grhscompsci2.java2DGame.actors.Ball;
 import com.github.grhscompsci2.java2DGame.actors.GreenBrick;
 import com.github.grhscompsci2.java2DGame.actors.Paddle;
+import com.github.grhscompsci2.java2DGame.actors.Actor.Type;
 
 import java.awt.image.*;
 import java.io.IOException;
@@ -275,20 +277,24 @@ public class Board extends JPanel {
 
     // Step through all of the actors
     for (Actor actor : Utility.castAndCrew) {
-      // don't check the dead
-      // if (!actor.isDead()) {
-      // step through all of the current actors, again
-      for (Actor other : Utility.castAndCrew) {
-        // if the other actor is not dead, and we are not checking against ourself
-        if (/* !other.isDead() && */actor != other) {
-          Rectangle a = actor.getBounds();
-          Rectangle b = other.getBounds();
-          if (a.intersects(b)) {
-            actor.hitActor(other);
+      //if the current actor is a bullet
+      if (actor.getType() == Type.bullet) {
+        boolean contact=false;
+        // step through all of the current actors, again
+        for (Actor other : Utility.castAndCrew) {
+          // if we are not checking against another bullet
+          if (other.getType() != Type.bullet) {
+            Rectangle a = actor.getBounds();
+            Rectangle b = other.getBounds();
+            // Do our rectangles intersect?
+            if (!contact&&a.intersects(b)) {
+              actor.hitActor(other);
+              other.hitActor(actor);
+              contact=true;
+            }
           }
         }
       }
-      // }
     }
   }
 }

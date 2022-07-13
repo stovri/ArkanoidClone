@@ -1,5 +1,7 @@
 package com.github.grhscompsci2.java2DGame.actors;
 
+import java.awt.Rectangle;
+
 import com.github.grhscompsci2.java2DGame.Utility;
 
 public class Ball extends Actor {
@@ -11,7 +13,6 @@ public class Ball extends Actor {
 
   @Override
   public void hitActor(Actor actor) {
-    // TODO Auto-generated method stub
     switch (actor.getType()) {
       case player:
         bounce(actor);
@@ -19,19 +20,24 @@ public class Ball extends Actor {
       case brick:
         reflect(actor);
         break;
+      default:
+        break;
     }
   }
 
   private void reflect(Actor actor) {
-    //find percentages of distance
-    double xPercent=(actor.getX()-getX())/(actor.getWidth()/2.0);
-    double yPercent=(actor.getY()-getY())/(actor.getHeight()/2.0);
-    if(Math.abs(xPercent)>=Math.abs(yPercent)){
-      setDX(getDX()*-1);
+    //Special case of no dX
+    /*if(getDX()==0){
+      setDY(-1*getDY());
     }
-    else{
-      setDY(getDY()*-1);
-    }
+    else{*/
+      Rectangle overlap=actor.getBounds().intersection(getBounds());
+      if (overlap.getWidth()>=overlap.getHeight()) {
+        setDY(-1 * getDY());
+      } else {
+        setDX(-1 * getDX());
+      }  
+    //}
   }
 
   private void bounce(Actor actor) {
