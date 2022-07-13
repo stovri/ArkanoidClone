@@ -24,8 +24,8 @@ public class Ball extends Actor {
 
   private void reflect(Actor actor) {
     //find percentages of distance
-    double xPercent=actor.getX()-getX()/(actor.getWidth()/2.0);
-    double yPercent=actor.getY()-getY()/(actor.getHeight()/2.0);
+    double xPercent=(actor.getX()-getX())/(actor.getWidth()/2.0);
+    double yPercent=(actor.getY()-getY())/(actor.getHeight()/2.0);
     if(Math.abs(xPercent)>=Math.abs(yPercent)){
       setDX(getDX()*-1);
     }

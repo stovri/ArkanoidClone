@@ -52,7 +52,7 @@ public class GameRunner {
     frame.pack();
     // set the title
 
-    frame.setTitle("FROGGER");
+    frame.setTitle("ARKANOID CLONE");
 
     // put the window in the center of the screen
     frame.setLocationRelativeTo(null);

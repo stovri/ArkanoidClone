@@ -96,8 +96,10 @@ public class Board extends JPanel {
 
     // Initialize all of your actors here: players, enemies, obstacles, etc.
     Utility.castAndCrew.add(new Paddle());
-    for(int i=0;i<10;i++){
-      Utility.castAndCrew.add(new GreenBrick(i*16+16, 64));
+    for (int i = 0; i < 7; i++) {
+      for (int j = 0; j < 11; j++) {
+        Utility.castAndCrew.add(new GreenBrick(j * 16 + 32, i * 8 + 64));
+      }
     }
   }
 
@@ -274,19 +276,19 @@ public class Board extends JPanel {
     // Step through all of the actors
     for (Actor actor : Utility.castAndCrew) {
       // don't check the dead
-      //if (!actor.isDead()) {
-        // step through all of the current actors, again
-        for (Actor other : Utility.castAndCrew) {
-          // if the other actor is not dead, and we are not checking against ourself
-          if (/*!other.isDead() && */actor != other) {
-            Rectangle a=actor.getBounds();
-            Rectangle b=other.getBounds();
-            if (a.intersects(b)) {
-              actor.hitActor(other);
-            }
+      // if (!actor.isDead()) {
+      // step through all of the current actors, again
+      for (Actor other : Utility.castAndCrew) {
+        // if the other actor is not dead, and we are not checking against ourself
+        if (/* !other.isDead() && */actor != other) {
+          Rectangle a = actor.getBounds();
+          Rectangle b = other.getBounds();
+          if (a.intersects(b)) {
+            actor.hitActor(other);
           }
         }
-      //}
+      }
+      // }
     }
   }
 }
