@@ -5,13 +5,21 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import com.github.grhscompsci2.java2DGame.actors.Actor;
+import com.github.grhscompsci2.java2DGame.actors.BlueBrick;
 import com.github.grhscompsci2.java2DGame.actors.GreenBrick;
+import com.github.grhscompsci2.java2DGame.actors.MagentaBrick;
 import com.github.grhscompsci2.java2DGame.actors.Paddle;
+import com.github.grhscompsci2.java2DGame.actors.RedBrick;
+import com.github.grhscompsci2.java2DGame.actors.SilverBrick;
+import com.github.grhscompsci2.java2DGame.actors.YellowBrick;
 import com.github.grhscompsci2.java2DGame.actors.Actor.Type;
 
 import java.awt.image.*;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.awt.*;
 
 /**
@@ -97,10 +105,51 @@ public class Board extends JPanel {
 
     // Initialize all of your actors here: players, enemies, obstacles, etc.
     Utility.castAndCrew.add(new Paddle());
-    for (int i = 0; i < 7; i++) {
-      for (int j = 0; j < 11; j++) {
-        Utility.castAndCrew.add(new GreenBrick(j * 16 + 32, i * 8 + 64));
+    loadLevel(1);
+  }
+
+  private void loadLevel(int i) {
+    Scanner reader;
+    try {
+      reader = new Scanner(new File(Utility.getLevelName(i).getFile()));
+    } catch (FileNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+      return;
+    }
+    
+    int y = 64;
+    while (reader.hasNext()) {
+      String line = reader.nextLine();
+      int x = 16;
+      while (line.length() > 0) {
+        String brickType = line.substring(0, 1);
+        line=line.substring(1);
+        switch (brickType) {
+          case "s":
+            Utility.addActor(new SilverBrick(x, y));
+            break;
+          case "r":
+            Utility.addActor(new RedBrick(x, y));
+            break;
+          case "g":
+            Utility.addActor(new GreenBrick(x, y));
+            break;
+          case "m":
+            Utility.addActor(new MagentaBrick(x, y));
+            break;
+          case "b":
+            Utility.addActor(new BlueBrick(x, y));
+            break;
+          case "y":
+            Utility.addActor(new YellowBrick(x, y));
+            break;
+          default:
+            break;
+        }
+        x += 16;
       }
+      y+=8;
     }
   }
 

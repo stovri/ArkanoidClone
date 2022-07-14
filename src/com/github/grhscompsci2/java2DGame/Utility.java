@@ -1,6 +1,7 @@
 package com.github.grhscompsci2.java2DGame;
 
 import java.awt.*;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -45,6 +46,9 @@ public class Utility {
     return Utility.class.getResource("images/" + fileName);
   }
 
+  public static URL getLevelName(int i){
+    return Utility.class.getResource("levels/level"+i+".txt");
+  }
   /**
    * Update the global scale factor using the background image dimensions and the
    * JFrame size
