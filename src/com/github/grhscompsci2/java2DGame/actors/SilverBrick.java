@@ -1,21 +1,18 @@
 package com.github.grhscompsci2.java2DGame.actors;
 
-public class SilverBrick extends Actor {
+public class SilverBrick extends Brick {
+  private int hp;
 
-  private static final String img = "silver_brick.png";
-  private int hits;
-
-  public SilverBrick(double x, double y) {
-    super(img, x, y, 0, Type.brick);
-    hits = 0;
+  public SilverBrick(double x, double y, int stage) {
+    super("silver_brick.png", x, y, 50 * stage);
+    hp = 2 + stage / 8;
   }
 
-  @Override
   public void hitActor(Actor actor) {
-    hits++;
+    hp--;
     // TODO Auto-generated method stub
-    if (hits > 1) {
-      die();
+    if (hp == 0) {
+      super.hitActor(actor);
     }
   }
 

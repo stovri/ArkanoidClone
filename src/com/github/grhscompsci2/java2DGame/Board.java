@@ -6,11 +6,14 @@ import javax.swing.SwingUtilities;
 
 import com.github.grhscompsci2.java2DGame.actors.Actor;
 import com.github.grhscompsci2.java2DGame.actors.BlueBrick;
+import com.github.grhscompsci2.java2DGame.actors.GoldBrick;
 import com.github.grhscompsci2.java2DGame.actors.GreenBrick;
 import com.github.grhscompsci2.java2DGame.actors.MagentaBrick;
+import com.github.grhscompsci2.java2DGame.actors.OrangeBrick;
 import com.github.grhscompsci2.java2DGame.actors.Paddle;
 import com.github.grhscompsci2.java2DGame.actors.RedBrick;
 import com.github.grhscompsci2.java2DGame.actors.SilverBrick;
+import com.github.grhscompsci2.java2DGame.actors.WhiteBrick;
 import com.github.grhscompsci2.java2DGame.actors.YellowBrick;
 import com.github.grhscompsci2.java2DGame.actors.Actor.Type;
 
@@ -77,7 +80,7 @@ public class Board extends JPanel {
    * The debug mode status. If this is set to true, bounding boxes will be
    * rendered.
    */
-  public static final boolean debugMode = true;
+  public static final boolean debugMode = false;
 
   /**
    * Initialize the board
@@ -117,17 +120,17 @@ public class Board extends JPanel {
       e.printStackTrace();
       return;
     }
-    
-    int y = 64;
+
+    int y = 24;
     while (reader.hasNext()) {
       String line = reader.nextLine();
       int x = 16;
       while (line.length() > 0) {
         String brickType = line.substring(0, 1);
-        line=line.substring(1);
+        line = line.substring(1);
         switch (brickType) {
           case "s":
-            Utility.addActor(new SilverBrick(x, y));
+            Utility.addActor(new SilverBrick(x, y, i));
             break;
           case "r":
             Utility.addActor(new RedBrick(x, y));
@@ -144,12 +147,21 @@ public class Board extends JPanel {
           case "y":
             Utility.addActor(new YellowBrick(x, y));
             break;
+          case "o":
+            Utility.addActor(new OrangeBrick(x, y));
+            break;
+          case "a":
+            Utility.addActor(new GoldBrick(x, y));
+            break;
+          case "w":
+            Utility.addActor(new WhiteBrick(x, y));
+            break;
           default:
             break;
         }
         x += 16;
       }
-      y+=8;
+      y += 8;
     }
   }
 
@@ -199,6 +211,8 @@ public class Board extends JPanel {
       g2d.setColor(Color.MAGENTA);
       g2d.drawRect(0, 0, Utility.scale(background.getWidth()), Utility.scale(background.getHeight()));
     }
+    Utility.drawScore(g2d, new Rectangle(0, 8, 72, 8));
+    Utility.drawTopScore(g2d, new Rectangle(76,8,72,8));
     ArrayList<Actor> paintActors = new ArrayList<>();
     paintActors.addAll(Utility.castAndCrew);
     // call other drawing stuff here
@@ -210,10 +224,6 @@ public class Board extends JPanel {
         }
       }
     }
-
-    // g2d.setColor(Color.BLACK);
-    // g2d.drawString("FPS: " + fps, 5, 10);
-
     frameCount++;
   }
 

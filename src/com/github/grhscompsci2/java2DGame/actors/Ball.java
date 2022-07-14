@@ -27,7 +27,7 @@ public class Ball extends Actor {
 
   private void reflect(Actor actor) {
     Rectangle overlap = actor.getBounds().intersection(getBounds());
-    if (overlap.getWidth() >= overlap.getHeight()) {
+    if (overlap.getWidth() >= overlap.getHeight()||getDX()==0) {
       setDY(-1 * getDY());
     } else {
       setDX(-1 * getDX());

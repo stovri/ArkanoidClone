@@ -1,17 +1,7 @@
 package com.github.grhscompsci2.java2DGame.actors;
 
-public class MagentaBrick extends Actor {
-
-  private static final String img = "magenta_brick.png";
-
+public class MagentaBrick extends Brick {
   public MagentaBrick(double x, double y) {
-    super(img, x, y, 0, Type.brick);
+    super("magenta_brick.png", x, y, 110);
   }
-
-  @Override
-  public void hitActor(Actor actor) {
-    // TODO Auto-generated method stub
-    die();
-  }
-
 }

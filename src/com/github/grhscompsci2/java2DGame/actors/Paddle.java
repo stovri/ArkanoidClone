@@ -8,7 +8,7 @@ import com.github.grhscompsci2.java2DGame.Utility;
  * bullet ArrayList.
  */
 public class Paddle extends Actor {
-  private final static String img = "paddle_long.png";
+  private final static String img = "paddle.png";
   private Ball ball;
   private boolean ballLaunched;
 

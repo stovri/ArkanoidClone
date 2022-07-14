@@ -1,7 +1,6 @@
 package com.github.grhscompsci2.java2DGame;
 
 import java.awt.*;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -35,6 +34,8 @@ public class Utility {
   public static boolean DOWN_ARROW = false;
   public static boolean RIGHT_ARROW = false;
   public static boolean SPACE = false;
+  public static int score = 0;
+  public static int topScore;
 
   /**
    * This method will return the URL for the specified image
@@ -46,9 +47,10 @@ public class Utility {
     return Utility.class.getResource("images/" + fileName);
   }
 
-  public static URL getLevelName(int i){
-    return Utility.class.getResource("levels/level"+i+".txt");
+  public static URL getLevelName(int i) {
+    return Utility.class.getResource("levels/level" + i + ".txt");
   }
+
   /**
    * Update the global scale factor using the background image dimensions and the
    * JFrame size
@@ -102,5 +104,47 @@ public class Utility {
   public static void addNew() {
     castAndCrew.addAll(newActors);
     newActors.clear();
+  }
+
+  public static void updateScore(int points) {
+    score += points;
+    if (score > topScore) {
+      topScore = score;
+    }
+  }
+
+  public static void drawScore(Graphics2D g2d, Rectangle rect) {
+    drawCenteredString(g2d, score + "", rect);
+  }
+
+  public static void drawTopScore(Graphics2D g2d, Rectangle rect) {
+    drawCenteredString(g2d, topScore + "", rect);
+  }
+
+  /**
+   * Draw a String centered in the middle of a Rectangle.
+   *
+   * @param g    The Graphics instance.
+   * @param text The String to draw.
+   * @param rect The Rectangle to center the text in.
+   */
+  public static void drawCenteredString(Graphics2D g2d, String text, Rectangle rect) {
+    
+    rect = new Rectangle(Utility.scale(rect.x), Utility.scale(rect.y), Utility.scale(rect.width),
+        Utility.scale(rect.height));
+    Font font = new Font("DialogInput", Font.BOLD, Utility.scale(10));
+    // Get the FontMetrics
+    FontMetrics metrics = g2d.getFontMetrics(font);
+    // Determine the X coordinate for the text
+    int x = rect.x + (rect.width - metrics.stringWidth(text)) / 2;
+    // Determine the Y coordinate for the text (note we add the ascent, as in java
+    // 2d 0 is top of the screen)
+    int y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
+    // Set the font
+    g2d.setFont(font);
+    //Set the color
+    g2d.setColor(Color.white);
+    // Draw the String
+    g2d.drawString(text, x, y);
   }
 }

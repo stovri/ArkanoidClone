@@ -1,17 +1,7 @@
 package com.github.grhscompsci2.java2DGame.actors;
 
-public class BlueBrick extends Actor {
-
-  private static final String img = "blue_brick.png";
-
+public class BlueBrick extends Brick {
   public BlueBrick(double x, double y) {
-    super(img, x, y, 0, Type.brick);
+    super("blue_brick.png", x, y, 100);
   }
-
-  @Override
-  public void hitActor(Actor actor) {
-    // TODO Auto-generated method stub
-    die();
-  }
-
 }
