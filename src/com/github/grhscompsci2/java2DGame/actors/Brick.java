@@ -11,6 +11,11 @@ public class Brick extends Actor {
     this.points = points;
   }
 
+  public Brick(String fileName, double x, double y, int points, Type type) {
+    super(fileName, x, y, 0, type);
+    this.points=points;
+  }
+
   @Override
   public void hitActor(Actor actor) {
     // TODO Auto-generated method stub

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.github.grhscompsci2.java2DGame.actors.Actor;
+import com.github.grhscompsci2.java2DGame.actors.Actor.Type;
 
 /**
  * This is the Utility class used by the Java 2D Game. It holds useful methods
@@ -146,5 +147,19 @@ public class Utility {
     g2d.setColor(Color.white);
     // Draw the String
     g2d.drawString(text, x, y);
+  }
+
+  public static boolean checkDone() {
+    for(Actor a:castAndCrew){
+      if(a.getType()==Type.brick)
+        return false;
+    }
+    return true;
+  }
+
+  public static void clearBoard() {
+    for(Actor a:castAndCrew){
+      a.die();
+    }
   }
 }

@@ -51,6 +51,9 @@ public class Paddle extends Actor {
     if (Utility.SPACE && !ballLaunched) {
       launchBall();
     }
+    if(ball.isDead()){
+      createBall();
+    }
     // check where our dx and dy values will send us
     double futureX = getX() + dx * deltaTime;
     // Get half the width or height of the sprite, whichever is largest

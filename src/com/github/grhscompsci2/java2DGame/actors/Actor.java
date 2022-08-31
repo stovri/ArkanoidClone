@@ -1,13 +1,13 @@
 package com.github.grhscompsci2.java2DGame.actors;
 
 import java.awt.Graphics2D;
-import java.awt.image.*;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import com.github.grhscompsci2.java2DGame.Board;
 import com.github.grhscompsci2.java2DGame.Utility;
 
 /**
@@ -78,7 +78,7 @@ public abstract class Actor {
     x += dx * deltaTime;
     y += dy * deltaTime;
   }
-  
+
   /**
    * Draws the sprite centered at the x, y location. Adapts to scale of the
    * JFrame.
@@ -90,15 +90,16 @@ public abstract class Actor {
     double offsetX = x - sprite.getWidth() / 2;
     double offsetY = y - sprite.getHeight() / 2;
     g.drawImage(sprite, Utility.scale(offsetX), Utility.scale(offsetY), Utility.scale(sprite.getWidth()),
-    Utility.scale(sprite.getHeight()), imageObserver);
+        Utility.scale(sprite.getHeight()), imageObserver);
   }
-  
+
   public void drawDebug(Graphics2D g2d) {
     double offsetX = x - sprite.getWidth() / 2;
     double offsetY = y - sprite.getHeight() / 2;
     g2d.drawRect(Utility.scale(offsetX), Utility.scale(offsetY), Utility.scale(sprite.getWidth()),
-    Utility.scale(sprite.getHeight()));
+        Utility.scale(sprite.getHeight()));
   }
+
   /**
    * Returns the x attribute
    * 

@@ -1,11 +1,23 @@
 package com.github.grhscompsci2.java2DGame;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import com.github.grhscompsci2.java2DGame.actors.Actor;
+import com.github.grhscompsci2.java2DGame.actors.Actor.Type;
 import com.github.grhscompsci2.java2DGame.actors.BlueBrick;
+import com.github.grhscompsci2.java2DGame.actors.CyanBrick;
 import com.github.grhscompsci2.java2DGame.actors.GoldBrick;
 import com.github.grhscompsci2.java2DGame.actors.GreenBrick;
 import com.github.grhscompsci2.java2DGame.actors.MagentaBrick;
@@ -15,15 +27,6 @@ import com.github.grhscompsci2.java2DGame.actors.RedBrick;
 import com.github.grhscompsci2.java2DGame.actors.SilverBrick;
 import com.github.grhscompsci2.java2DGame.actors.WhiteBrick;
 import com.github.grhscompsci2.java2DGame.actors.YellowBrick;
-import com.github.grhscompsci2.java2DGame.actors.Actor.Type;
-
-import java.awt.image.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.awt.*;
 
 /**
  * This class controls the JPanel where the game logic and rendering happen. You
@@ -82,6 +85,7 @@ public class Board extends JPanel {
    */
   public static final boolean debugMode = false;
 
+  public int level;
   /**
    * Initialize the board
    */
@@ -97,7 +101,7 @@ public class Board extends JPanel {
     // Initialize all actors below here
     initBoard();
   }
-
+  
   /**
    * This method will initialize the key listener, load the background image, set
    * the window size to the size of the image, and initialize an actor. When you
@@ -105,21 +109,18 @@ public class Board extends JPanel {
    * that need to be used in the game.
    */
   private void initBoard() {
-
+    
     // Initialize all of your actors here: players, enemies, obstacles, etc.
     Utility.castAndCrew.add(new Paddle());
-    loadLevel(1);
+    level=3;
+    loadLevel();
   }
-
-  private void loadLevel(int i) {
+  
+  private void loadLevel() {
     Scanner reader;
-    try {
-      reader = new Scanner(new File(Utility.getLevelName(i).getFile()));
-    } catch (FileNotFoundException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      return;
-    }
+
+      reader = new Scanner(this.getClass().getResourceAsStream("levels/level"+level+".txt"));
+
 
     int y = 24;
     while (reader.hasNext()) {
@@ -130,7 +131,10 @@ public class Board extends JPanel {
         line = line.substring(1);
         switch (brickType) {
           case "s":
-            Utility.addActor(new SilverBrick(x, y, i));
+            Utility.addActor(new SilverBrick(x, y, level));
+            break;
+          case "c":
+            Utility.addActor(new CyanBrick(x, y));
             break;
           case "r":
             Utility.addActor(new RedBrick(x, y));
@@ -308,6 +312,15 @@ public class Board extends JPanel {
     checkCollisions();
     Utility.clearDead();
     Utility.addNew();
+    if(Utility.checkDone()){
+      level++;
+      Utility.clearBoard();
+      if(level>3){
+        level=1;
+      }
+      Utility.castAndCrew.add(new Paddle());
+      loadLevel();
+    }
     // Have all of your actor attributes act here.
     for (Actor actor : Utility.castAndCrew) {
       actor.act(deltaTime);
